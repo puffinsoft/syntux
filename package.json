@@ -2,9 +2,13 @@
   "name": "getsyntux",
   "version": "0.1.0",
   "description": "The deterministic generative-UI library.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./plugin": "./dist/plugin.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +19,16 @@
   "bugs": {
     "url": "https://github.com/puffinsoft/syntux/issues"
   },
-  "homepage": "https://github.com/puffinsoft/syntux#readme"
+  "homepage": "https://github.com/puffinsoft/syntux#readme",
+  "dependencies": {
+    "@types/node": "^25.0.2",
+    "@types/react": "^19.2.7",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build"
+  }
 }

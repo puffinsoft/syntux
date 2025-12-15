@@ -10,4 +10,7 @@ export default defineConfig({
   external: ["react", "react-dom", "next"],
   bundle: false, 
   treeshake: true,
+  loader: {
+    ".md": "text"
+  }
 });

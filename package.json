@@ -4,9 +4,9 @@
   "description": "The deterministic generative-UI library.",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./plugin": "./dist/plugin.js"
   },
@@ -30,5 +30,6 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "prepublishOnly": "npm run build"
-  }
+  },
+  "files": ["/dist/**/*"]
 }

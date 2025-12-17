@@ -12,8 +12,8 @@ module.exports = function ({ types: t }) {
       return signature;
     }
   
-    // create expression name["llmContext"] = signature
-    function assignment(name, signature) {
+    // create expression name.llmContext = signature
+    function contextAssignment(name, signature) {
       return t.expressionStatement(
         t.assignmentExpression(
           "=",
@@ -21,6 +21,17 @@ module.exports = function ({ types: t }) {
           t.stringLiteral(signature)
         )
       );
+    }
+
+    // create expression name.llmName = name
+    function nameAssignment(name){
+      return t.expressionStatement(
+        t.assignmentExpression(
+          "=",
+          t.memberExpression(t.identifier(name), t.identifier("llmName")),
+          t.stringLiteral(name)
+        )
+      ); 
     }
   
     return {
@@ -38,7 +49,7 @@ module.exports = function ({ types: t }) {
           const params = node.params;
           const props = extractProps(state, params);
   
-          path.insertAfter(assignment(name, props));
+          path.insertAfter([contextAssignment(name, props), nameAssignment(name)]);
         },
   
         /**
@@ -57,7 +68,7 @@ module.exports = function ({ types: t }) {
           const params = node.init.params;
           const props = extractProps(state, params);
   
-          path.parentPath.insertAfter(assignment(name, props));
+          path.parentPath.insertAfter([contextAssignment(name, props), nameAssignment(name)]);
         },
       },
     };

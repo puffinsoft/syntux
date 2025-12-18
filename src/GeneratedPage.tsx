@@ -3,13 +3,16 @@ import { GeneratedContentProps, SIGNATURE } from "./GeneratedContent";
 import { Renderer, SchemaNode } from "./Renderer";
 import { SyntuxComponent, SyntuxElement } from "./types";
 import { parseResponse } from "./util";
-import { createAnthropic } from '@ai-sdk/anthropic';
 import { generateText } from "ai";
 import systemPrompt from './prompt.md';
+
+import { type LanguageModel } from 'ai';
 
 export interface GeneratedPageProps {
     context?: string;
     schema: SyntuxElement;
+    onGenerate?: (result: SchemaNode[]) => void;
+    cached?: (SchemaNode | string)[];
 }
 
 function extractChildren(element: any) {
@@ -106,12 +109,12 @@ function hydrate(schema: SyntuxElement, dsl: (SchemaNode | string)[]) {
     function swapChildren(element: SyntuxElement) {
         const children = extractChildren(element);
 
-        return children.map((child: SyntuxElement) => {
+        return children.map((child: SyntuxElement, ind: number) => {
             if (!isValidElement(child)) return child;
 
             if (child.type.identifier === SIGNATURE) {
                 const { values, components, hint } = child.props as GeneratedContentProps;
-                return <Renderer schema={dsl[componentIndex++]} global={values} local={values} components={createComponentRegistry(components)} />
+                return <Renderer key={ind} schema={dsl[componentIndex++]} global={values} local={values} components={createComponentRegistry(components)} />
             }
 
             return swapChildren(child);
@@ -127,22 +130,32 @@ interface ContentSchema {
     hint: string;
 }
 
-const anthropic = createAnthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY
-})
+export const createGeneratedPage = (model: LanguageModel) => {
+    return async function GeneratedPage({
+        context, schema, cached, onGenerate
+    }: GeneratedPageProps) {
+        if(cached){
+            return <>{hydrate(schema, cached)}</>
+        }
 
-export async function GeneratedPage({
-    context, schema
-}: GeneratedPageProps) {
-    const contents: ContentSchema[] = [];
-    searchChildren(schema, contents);
-    const llmInput = generateInput(contents, context);
+        const contents: ContentSchema[] = [];
+        searchChildren(schema, contents);
 
-    const { text: llmResponse } = await generateText({
-        model: anthropic("claude-sonnet-4-5"),
-        system: systemPrompt,
-        prompt: llmInput
-    })
-    const parsedResponse = parseResponse(llmResponse)
-    return <>{hydrate(schema, parsedResponse)}</>
+        if(contents.length == 0) return schema;
+
+        const llmInput = generateInput(contents, context);
+
+        const { text: llmResponse } = await generateText({
+            model,
+            system: systemPrompt,
+            prompt: llmInput
+        })
+        const parsedResponse = parseResponse(llmResponse)
+
+        if(onGenerate){
+            onGenerate(parsedResponse)
+        }
+        
+        return <>{hydrate(schema, parsedResponse)}</>
+    }
 }

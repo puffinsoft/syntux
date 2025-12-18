@@ -1,4 +1,4 @@
-![](docs/images/banner.png)
+![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/banner.png)
 
 <p align="center">
 <i>syntux</i> lets you build <b>personalized</b> generative UIs that are <i>secure</i> and <i>deterministic</i>.
@@ -7,11 +7,11 @@
 ---
 How it works:
 
-![](docs/images/diagram_code.png)
+![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_code.png)
 <br/><br/>
 `values` can be anything:
 
-![](docs/images/diagram_ui.png)
+![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_ui.png)
 
 
 <h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
@@ -74,7 +74,7 @@ That's not it though! See the [wiki](https://github.com/puffinsoft/syntux/wiki) 
 
 **How does generation work?**
 
-![](docs/images/workflow.png)
+![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/workflow.png)
 
 ---
 

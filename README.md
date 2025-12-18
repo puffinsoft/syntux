@@ -69,15 +69,17 @@ See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to complete the
 
 **How does generation work?**
 
- Generated designs are designed to be *reusable* and *cacheable*.
-<br/><br/>
 ![](docs/images/workflow.png)
+
+---
+
+ Generated designs are designed to be *reusable* and *cacheable*.
 
  To do this, *syntux* generates a "React Interface Schema" (RIS). It's essentially an Abstract Syntax Tree tailored to the `value` that you pass in. This schema is then hydrated by *syntux* and rendered.
 
  The RIS has built-in support for arrays, and thus can handle inputs of arbitrary lengths, making it cacheable. To get a better understanding, see the [LLM prompt itself](src/prompt.md).
 
-
+\-
 
 <details>
  <summary>How does <i>syntux</i> understand how to use components?</summary>

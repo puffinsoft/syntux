@@ -1,0 +1,124 @@
+![](docs/images/banner.png)
+
+<p align="center">
+<i>syntux</i> lets you build <b>personalized</b> generative UIs that are <i>secure</i> and <i>deterministic</i>.
+</p>
+
+---
+How it works:
+
+![](docs/images/diagram_code.png)
+<br/>
+`values` can be anything:
+
+![](docs/images/diagram_ui.png)
+
+Features:
+
+- 🎨 **Consistency** - use and restrict custom components for reusability and consistent aesthetics.
+- 💾 **Cacheable** - generate once, use forever. Cached interfaces can be reused with different values.
+- 🔒 **Secure by default** - uses built-in component mapping engine. No `dangerouslySetInnerHTML`.
+- 🌐 **Server-sided** - for full SEO support and stronger first load performance.
+
+---
+
+### Examples
+
+Personalized analytics dashboard on Next.js:
+
+```jsx
+import { GeneratedPage, GeneratedContent } from 'getsyntux';
+
+const interest = "marketing";
+const statistics = [{ ... }, { ... }, { ... }];
+
+<GeneratedPage context={`Analytics dashboard. User interest: ${interest}`} schema={
+    <div>
+        <Navbar />
+        <GeneratedContent
+            value={statistics}
+            allowedComponents={[ BarChart, LineChart, Histogram ]}
+            hint="show charts related to user interest first"
+        />
+        <Footer />
+    </div>
+} />
+```
+
+---
+### Installation
+
+*syntux* is designed to be set up in 5 minutes.
+
+CLI:
+```
+npm i ai
+npm i getsyntux
+```
+
+We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide you flexibility on your provider choice.
+
+See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to complete the installation.
+
+
+### FAQ
+
+<details open>
+ <summary>How does <i>syntux</i> understand how to use components?</summary>
+ 
+👀 **tl:dr**: *syntux* is not designed to understand your codebase. It is only designed to know ***how to use*** your codebase.
+
+**The LLM never sees your source code.** The result? Better privacy, lower LLM costs, faster generation time.
+
+---
+
+To do this, *syntux* automatically generates documentation (known as *llmContext*) for your components at compilation time.
+
+We use Babel to scan your code and attach *llmContext* to components (automatically). Additionally, for best results, developers should provide *user context* to reinforce LLM understanding.
+
+For instance:
+
+```js
+const Profile = ({ username, imageURL }: { username: string, imageURL: string }) => { /* ... */ }
+console.log(Profile.llmContext) // "props: ({ username, imageURL }: { username: string, imageURL: string })"
+console.log(Profile.llmName) // "Profile"
+
+Profile.userContext = "Displays a small user profile"; // add further context
+```
+
+> [!NOTE]
+> **The name of your components and props matter!** 
+>
+> That information is directly sent to the LLM for context on how to incorporate it into the UI.
+</details>
+
+<details>
+ <summary>How does generation work?</summary>
+
+ Generated designs are designed to be *reusable* and *cacheable*.
+
+ To do this, *syntux* generates a "React Interface Schema," (RIS) a JSON-DSL (domain specific language) tailored to the `value` that you pass in. Think of this like a JSON representation of an Abstract Syntax Tree. This schema is then hydrated by *syntux* and rendered.
+
+ The RIS has built-in support for arrays, and thus can handle inputs of arbitrary lengths, making it cacheable. To get a better understanding, see the [LLM prompt itself](src/prompt.md).
+</details>
+<details>
+ <summary>What about state? Can state be generated?</summary>
+ 
+ Non-stateful components should be wrapped in stateful components, then passed to *syntux* to generate.
+
+ Dynamic state generation violates the deterministic paradigm of <i>syntux</i>, and is thus not supported by design.
+</details>
+
+<details>
+ <summary>How do generated components share information?</summary>
+
+  Use contexts.
+
+ ```jsx
+ <GeneratedPage schema={
+    <Context.Provider>
+        <GeneratedContent components={[ MyComponent ]} />
+    </Context.Provider>
+} />
+```
+</details>

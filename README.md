@@ -44,21 +44,20 @@ const statistics = [{ ... }, { ... }, { ... }];
     </div>
 } />
 ```
+<sup><i>syntux</i> is tested for Next.js, but should support all React frameworks.</sup>
 
 ---
 ### Installation
 
-*syntux* is designed to be set up in 5 minutes.
-
-CLI:
+npm:
 ```
 npm i ai
 npm i getsyntux
 ```
 
-We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide you flexibility on your provider choice.
+We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers.
 
-See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to complete the installation.
+See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to complete the installation. It takes less than 5 minutes.
 
 
 ### FAQ
@@ -122,3 +121,7 @@ Profile.userContext = "Displays a small user profile"; // add further context
 } />
 ```
 </details>
+
+---
+
+*syntux* is open source software, licensed under the [MIT](LICENSE) license.

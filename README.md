@@ -109,10 +109,10 @@ console.log(Profile.llmName) // "Profile"
 Profile.userContext = "Displays a small user profile"; // add further context
 ```
 
-> [!NOTE]
-> **The name of your components and props matter!** 
+> **Note**: The name of your components and props matter! 
 >
 > That information is directly sent to the LLM for context on how to incorporate it into the UI.
+
 </details>
 
 <details>

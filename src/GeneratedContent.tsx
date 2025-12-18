@@ -13,7 +13,7 @@ export interface GeneratedContentProps {
  * @param components List of allowed components that LLM can use.
  * @param hint Additional custom instructions for the LLM.
  */
-export default function GeneratedContent(props: GeneratedContentProps) {
+export function GeneratedContent(props: GeneratedContentProps) {
   /**
    * This is an empty component.
    * It acts as a declarative slot that <GeneratedPage> recognizes

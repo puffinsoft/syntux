@@ -131,6 +131,14 @@ interface ContentSchema {
 }
 
 export const createGeneratedPage = (model: LanguageModel) => {
+    /**
+     * Container for content generation. Batches all <GeneratedContent> blocks into one LLM call.
+     * 
+     * @param context Custom instructions for the LLM about the page, applicable to all components.
+     * @param schema The structure of the page. Can be a mix of any type of component.
+     * @param cached User provided React Interface Schema. Will skip schema generation if one is provided.
+     * @param onGenerate Callback for receiving React Interface Schema after generation, to be used for caching. 
+     */
     return async function GeneratedPage({
         context, schema, cached, onGenerate
     }: GeneratedPageProps) {

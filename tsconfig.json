@@ -3,6 +3,7 @@
         "outDir": "./dist",
         "jsx": "react-jsx",
         "allowJs": true,
+        "removeComments": false,
         "module": "nodenext",
         "moduleResolution": "nodenext"
     },

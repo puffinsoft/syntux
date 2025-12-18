@@ -1,16 +1,16 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/plugin.ts", "src/components/**/*.ts", "src/components/**/*.tsx"],
+  entry: ["src/index.ts", "src/plugin.ts"],
   format: ["cjs", "esm"],
   dts: true,
   splitting: false,
   sourcemap: true,
   clean: true,
   external: ["react", "react-dom", "next"],
-  bundle: false, 
+  bundle: true, 
   treeshake: true,
   loader: {
     ".md": "text"
-  }
+  },
 });

@@ -8,17 +8,21 @@
 How it works:
 
 ![](docs/images/diagram_code.png)
-<br/>
+<br/><br/>
 `values` can be anything:
 
 ![](docs/images/diagram_ui.png)
 
+---
+
 Features:
 
+- 💾 **Cacheable** - generated interfaces <b>can be reused</b> (*) with different values.
 - 🎨 **Consistency** - use and restrict custom components for reusability and consistent aesthetics.
-- 💾 **Cacheable** - generate once, use forever. Cached interfaces can be reused with different values.
 - 🔒 **Secure by default** - uses built-in component mapping engine. No `dangerouslySetInnerHTML`.
 - 🌐 **Server-sided** - for full SEO support and stronger first load performance.
+
+<sup>* assuming same object structure (type). arrays are fully supported!</sup>
 
 ---
 
@@ -59,10 +63,23 @@ We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for 
 
 See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to complete the installation. It takes less than 5 minutes.
 
+---
 
 ### FAQ
 
-<details open>
+**How does generation work?**
+
+ Generated designs are designed to be *reusable* and *cacheable*.
+<br/><br/>
+![](docs/images/workflow.png)
+
+ To do this, *syntux* generates a "React Interface Schema" (RIS). It's essentially an Abstract Syntax Tree tailored to the `value` that you pass in. This schema is then hydrated by *syntux* and rendered.
+
+ The RIS has built-in support for arrays, and thus can handle inputs of arbitrary lengths, making it cacheable. To get a better understanding, see the [LLM prompt itself](src/prompt.md).
+
+
+
+<details>
  <summary>How does <i>syntux</i> understand how to use components?</summary>
  
 👀 **tl:dr**: *syntux* is not designed to understand your codebase. It is only designed to know ***how to use*** your codebase.
@@ -91,15 +108,6 @@ Profile.userContext = "Displays a small user profile"; // add further context
 > That information is directly sent to the LLM for context on how to incorporate it into the UI.
 </details>
 
-<details>
- <summary>How does generation work?</summary>
-
- Generated designs are designed to be *reusable* and *cacheable*.
-
- To do this, *syntux* generates a "React Interface Schema," (RIS) a JSON-DSL (domain specific language) tailored to the `value` that you pass in. Think of this like a JSON representation of an Abstract Syntax Tree. This schema is then hydrated by *syntux* and rendered.
-
- The RIS has built-in support for arrays, and thus can handle inputs of arbitrary lengths, making it cacheable. To get a better understanding, see the [LLM prompt itself](src/prompt.md).
-</details>
 <details>
  <summary>What about state? Can state be generated?</summary>
  

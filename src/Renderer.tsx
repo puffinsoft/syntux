@@ -43,7 +43,7 @@ export interface RendererProps {
     components: Record<string, ComponentType<any> | string>;
 }
 
-export default function Renderer({
+export function Renderer({
     schema, global, local, components
 }: RendererProps) {
     if(typeof schema === "string") return <>{schema}</>;

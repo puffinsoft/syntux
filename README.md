@@ -13,6 +13,9 @@ How it works:
 
 ![](docs/images/diagram_ui.png)
 
+
+<h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
+
 ---
 
 Features:
@@ -50,18 +53,20 @@ const statistics = [{ ... }, { ... }, { ... }];
 ```
 <sup><i>syntux</i> is tested for Next.js, but should support all React frameworks.</sup>
 
+<h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
+
 ---
 ### Installation
 
-npm:
+We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers.
+
+First, install via npm:
 ```
 npm i ai
 npm i getsyntux
 ```
 
-We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers.
-
-See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to complete the installation. It takes less than 5 minutes.
+That's not it though! See the [wiki](https://github.com/puffinsoft/syntux/wiki) on how to set it up. It takes less than 5 minutes.
 
 ---
 

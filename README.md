@@ -5,6 +5,10 @@
 </p>
 
 ---
+
+**Why generative UIs?** Modern user interfaces are static, one-size-fits-all solutions. With generative UIs, you can create interfaces tailored to individual users.
+
+---
 How it works:
 
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_code.png)
@@ -16,7 +20,6 @@ How it works:
 
 <h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
 
----
 
 Features:
 
@@ -55,7 +58,6 @@ const statistics = [{ ... }, { ... }, { ... }];
 
 <h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
 
----
 ### Installation
 
 We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers.

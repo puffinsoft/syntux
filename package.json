@@ -1,6 +1,6 @@
 {
   "name": "getsyntux",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "The deterministic generative-UI library.",
   "exports": {
     ".": {

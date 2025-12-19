@@ -24,36 +24,37 @@ function extractChildren(element: any) {
     return [];
 }
 
-function searchChildren(element: any, acc: ContentSchema[]) {
-    const children = extractChildren(element);
+function searchChildren(element: SyntuxElement, acc: ContentSchema[]) {
+    if(!isValidElement(element)) return;
 
-    children.forEach((element: SyntuxElement, index: number) => {
-        if (element?.type.identifier === SIGNATURE) {
-            const { values, components, hint } = element.props as GeneratedContentProps;
-            const realComponents: any = []
+    if(element.type.identifier === SIGNATURE){
+        const { values, components, hint } = element.props as GeneratedContentProps;
+        const realComponents: any = []
 
-            if (components) {
-                components.forEach((comp: string | SyntuxComponent) => {
-                    if (typeof comp === "string") {
-                        realComponents.push({
-                            llmName: comp
-                        })
-                    } else {
-                        realComponents.push({
-                            llmName: comp.llmName,
-                            llmContext: comp.llmContext,
-                            userContext: comp.userContext
-                        })
-                    }
-                })
-            }
-            acc.push({
-                values, components: realComponents, hint: hint || ""
+        if (components) {
+            components.forEach((comp: string | SyntuxComponent) => {
+                if (typeof comp === "string") {
+                    realComponents.push({
+                        llmName: comp
+                    })
+                } else {
+                    realComponents.push({
+                        llmName: comp.llmName,
+                        llmContext: comp.llmContext,
+                        userContext: comp.userContext
+                    })
+                }
             })
-        } else {
-            searchChildren(element, acc)
         }
-    })
+        acc.push({
+            values, components: realComponents, hint: hint || ""
+        })
+    } else {
+        const children = extractChildren(element);
+        children.forEach((child: SyntuxElement) => {
+            searchChildren(child, acc)
+        })
+    }
 }
 
 function generateInput(content: ContentSchema[], context?: string) {
@@ -107,16 +108,21 @@ function createComponentRegistry(components: (SyntuxComponent<any> | string)[] |
 function hydrate(schema: SyntuxElement, dsl: (SchemaNode | string)[]) {
     let componentIndex = 0;
     function swapChildren(element: SyntuxElement) {
+        if(!isValidElement(element)) return element;
+
+        if(element.type.identifier === SIGNATURE){
+            const { values, components, hint } = element.props as GeneratedContentProps;
+            return <Renderer key={componentIndex} schema={dsl[componentIndex++]} global={values} local={values} components={createComponentRegistry(components)} />;
+        }
+
+
         const children = extractChildren(element);
 
+        if(children.length == 0){
+            return element;
+        }
+
         return children.map((child: SyntuxElement, ind: number) => {
-            if (!isValidElement(child)) return child;
-
-            if (child.type.identifier === SIGNATURE) {
-                const { values, components, hint } = child.props as GeneratedContentProps;
-                return <Renderer key={ind} schema={dsl[componentIndex++]} global={values} local={values} components={createComponentRegistry(components)} />
-            }
-
             return swapChildren(child);
         })
     }
@@ -148,7 +154,8 @@ export const createGeneratedPage = (model: LanguageModel) => {
 
         const contents: ContentSchema[] = [];
         searchChildren(schema, contents);
-
+        console.log('contents', contents);
+        
         if(contents.length == 0) return schema;
 
         const llmInput = generateInput(contents, context);

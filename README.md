@@ -1,7 +1,7 @@
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/banner.png)
 
 <p align="center">
-<i>syntux</i> lets you build <b>personalized</b> generative UIs that are <i>secure</i> and <i>deterministic</i>.
+<i>syntux</i> lets you build <b>personalized</b> generative UIs that are <i>secure</i> and <i>declarative</i>.
 </p>
 
 ---
@@ -122,7 +122,7 @@ Profile.userContext = "Displays a small user profile"; // add further context
  
  Non-stateful components should be wrapped in stateful components, then passed to *syntux* to generate.
 
- Dynamic state generation violates the deterministic paradigm of <i>syntux</i>, and is thus not supported by design.
+ Dynamic state generation violates the semi-deterministic paradigm of <i>syntux</i>, and is thus not supported by design.
 </details>
 
 <details>

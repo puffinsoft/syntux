@@ -6,29 +6,25 @@
 
 ---
 
-**Why generative UIs?** Modern user interfaces are static, one-size-fits-all solutions. With generative UIs, you can create interfaces tailored to individual users.
+**Why generative UIs?** Modern user interfaces are **static**, one-size-fits-all solutions.
+
+The future of user interfaces is **personalized**. With generative UIs, you can create interfaces tailored to individual users, generated on the fly.
 
 ---
 How it works:
 
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_code.png)
-<br/><br/>
-`values` can be anything:
 
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_ui.png)
 
-
-<h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
-
-
 Features:
 
-- 💾 **Cacheable** - generated interfaces <b>can be reused</b> (*) with different values.
+- 💾 **Cacheable** - generated interfaces <b>can be reused</b> with different values.
 - 🎨 **Consistency** - use and restrict custom components for reusability and consistent aesthetics.
 - 🔒 **Secure by default** - uses built-in component mapping engine. No `dangerouslySetInnerHTML`.
-- 🌐 **Server-sided** - for full SEO support and stronger first load performance.
+- 🌐 **SSR Enabled** - for full SEO support and stronger first load performance.
 
-<sup>* assuming same object structure (type). arrays are fully supported!</sup>
+<h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
 
 ---
 
@@ -78,7 +74,6 @@ That's not it though! See the [wiki](https://github.com/puffinsoft/syntux/wiki) 
 
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/workflow.png)
 
----
 
  Generated designs are designed to be *reusable* and *cacheable*.
 

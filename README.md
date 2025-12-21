@@ -1,28 +1,19 @@
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/banner.png)
 
 <p align="center">
-<i>syntux</i> lets you build <b>personalized</b> generative UIs that are <i>secure</i> and <i>declarative</i>.
+<i>syntux</i> lets you build generative UIs that are <b><i>consistent</i></b> and <b><i>flexible</i></b>.
 </p>
 
 ---
 
-**Why generative UIs?** Modern user interfaces are **static**, one-size-fits-all solutions.
-
-The future of user interfaces is **personalized**. With generative UIs, you can create interfaces tailored to individual users, generated on the fly.
-
----
 How it works:
 
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_code.png)
-
-![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/diagram_ui.png)
 
 Features:
 
 - 💾 **Cacheable** - generated interfaces <b>can be reused</b> with different values.
 - 🎨 **Consistency** - use and restrict custom components for reusability and consistent aesthetics.
-- 🔒 **Secure by default** - uses built-in component mapping engine. No `dangerouslySetInnerHTML`.
-- 🌐 **SSR Enabled** - for full SEO support and stronger first load performance.
 
 <h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
 
@@ -53,6 +44,8 @@ const statistics = [{ ... }, { ... }, { ... }];
 <sup><i>syntux</i> is tested for Next.js, but should support all React frameworks.</sup>
 
 <h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
+
+---
 
 ### Installation
 

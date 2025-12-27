@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/puffinsoft/syntux#readme",
   "dependencies": {
+    "@ai-sdk/rsc": "^2.0.3",
     "@types/node": "^25.0.2",
     "@types/react": "^19.2.7",
     "ai": "^6.0.3",

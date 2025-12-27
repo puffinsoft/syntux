@@ -4,8 +4,6 @@ import { SyntuxComponent } from "./types";
 /**
  * Converts a list of components into a dictionary for fast-retrieval
  * during rendering.
- * 
- * Components whose context is not known at runtime are automatically excluded.
  */
 export function generateComponentMap(allowedComponents: (SyntuxComponent | string)[]){
     return allowedComponents.reduce((acc: Record<string, React.ComponentType<any> | string>, curr: SyntuxComponent | string) => {
@@ -19,6 +17,9 @@ export function generateComponentMap(allowedComponents: (SyntuxComponent | strin
     }, {})
 }
 
+/**
+ * Creates LLM input in accordance to the spec
+ */
 export function constructInput({
     value, components, hint
 } : GeneratedContentProps){

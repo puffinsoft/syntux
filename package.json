@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/node": "^25.0.2",
     "@types/react": "^19.2.7",
-    "ai": "^5.0.115",
+    "ai": "^6.0.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
@@ -34,5 +34,9 @@
   },
   "files": [
     "/dist/**/*"
-  ]
+  ],
+  "devDependencies": {
+    "@ai-sdk/anthropic": "^3.0.1",
+    "tsx": "^4.21.0"
+  }
 }

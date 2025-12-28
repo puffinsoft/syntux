@@ -1,6 +1,6 @@
 {
   "name": "getsyntux",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "The declarative generative-UI library.",
   "exports": {
     ".": {
@@ -8,7 +8,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./plugin": "./dist/plugin.js"
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js"
+    }
   },
   "repository": {
     "type": "git",
@@ -38,6 +42,7 @@
   ],
   "devDependencies": {
     "@ai-sdk/anthropic": "^3.0.1",
+    "esbuild-plugin-preserve-directives": "^0.0.11",
     "tsx": "^4.21.0"
   }
 }

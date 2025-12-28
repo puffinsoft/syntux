@@ -7,9 +7,10 @@ import path from 'path';
 export default defineConfig({
   entry: {
     index: "src/index.ts",
-    client: "src/client.ts"
+    client: "src/client.ts",
+    "bin/cli": "src/bin/cli.mjs"
   },
-  format: ["cjs", "esm"],
+  format: ["esm"],
   dts: true,
   splitting: false,
   sourcemap: true,
@@ -29,9 +30,8 @@ export default defineConfig({
     const src = path.resolve(__dirname, 'src/templates');
     const dest = path.resolve(__dirname, 'dist/templates');
     
-    // Recursive copy (Node 16.7+)
     fs.cpSync(src, dest, { recursive: true });
     
-    console.log('✅ Templates copied to dist/templates');
+    console.log('[getsyntux] Templates copied to dist/templates');
   }
 });

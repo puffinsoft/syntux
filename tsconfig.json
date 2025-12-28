@@ -9,7 +9,9 @@
         "moduleResolution": "nodenext",
         "baseUrl": ".",
         "paths": {
-            "getsyntux/*": ["./src/*"],
+            "getsyntux": ["./src/index.ts"],
+            "getsyntux/client": ["./src/client.ts"],
         }
     },
+    "exclude": ["./dist/**/*"]
 }

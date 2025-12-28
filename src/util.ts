@@ -1,4 +1,4 @@
-import { GeneratedContentProps } from "./GeneratedUI";
+import { GeneratedContentProps } from "./templates/GeneratedUI";
 import { SyntuxComponent } from "./types";
 
 /**

@@ -1,5 +1,7 @@
+"use client";
+
 import { ComponentType, Fragment } from 'react'
-import { ChildrenMap, ComponentMap, SchemaNode } from './types';
+import { ChildrenMap, ComponentMap, SchemaNode } from '../types';
 
 const resolvePath = (obj: any, path: string) => {
     if (path === '$') return obj;

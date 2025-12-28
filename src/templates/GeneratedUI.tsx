@@ -1,14 +1,12 @@
 import { JSX } from 'react';
-import { SyntuxComponent, UISchema } from './types';
-import { constructInput, generateComponentMap } from './util';
 
 import { createStreamableValue } from '@ai-sdk/rsc';
 import { LanguageModel, streamText } from 'ai';
-import GeneratedClient from './GeneratedClient';
-import { Renderer } from './Renderer';
-import { ResponseParser } from './ResponseParser';
 
-import spec from './spec.md';
+import { GeneratedClient, Renderer } from 'getsyntux/client';
+import { ResponseParser, SyntuxComponent, UISchema, constructInput, generateComponentMap } from "getsyntux";
+
+import spec from './spec';
 
 export interface GeneratedContentProps {
     value: any;

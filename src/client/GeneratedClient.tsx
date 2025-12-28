@@ -3,10 +3,10 @@
 import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
 import React, { useEffect, useRef, useState } from 'react';
 import { Renderer } from './Renderer';
-import { ResponseParser } from './ResponseParser';
-import { UISchema } from './types';
+import { ResponseParser } from '../ResponseParser';
+import { UISchema } from '../types';
 
-export default function GeneratedClient({
+export function GeneratedClient({
   value,
   allowedComponents,
   inputStream

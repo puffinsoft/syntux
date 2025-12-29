@@ -6,7 +6,7 @@
 
 ---
 
-https://github.com/user-attachments/assets/f968d2c3-3b1e-4fc8-8e72-628f4361359b
+https://github.com/user-attachments/assets/a930d35d-92ab-45f4-9f71-f7bc0380c4f1
 
 - ⚡ **Streamable** - display UI as you generate.
 - 🎨 **Custom Components** - maintain aesthetics and reusability.

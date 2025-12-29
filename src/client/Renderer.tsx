@@ -19,7 +19,7 @@ const get = (global: any, local: any, path: string) => {
 }
 
 const resolveProps = (global: any, local: any, props: any) => {
-    if (!props) return;
+    if (!props) return props;
     if ("$bind" in props) return get(global, local, props.$bind); // $bind may be falsy value
     Object.keys(props).forEach((key) => {
         const val = props[key];
@@ -47,12 +47,17 @@ const renderContent = (global: any, local: any, content: any) => {
     }
 }
 
+const voidElements = new Set([
+    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+    'link', 'meta', 'param', 'source', 'track', 'wbr'
+])
+
 export function Renderer(props: RendererProps) {
     const {
         id, componentMap, childrenMap, global, local, allowedComponents
     } = props;
     const element = componentMap[id];
-    
+
     if (element.type === "TEXT") return <>{renderContent(global, local, element.content)}</>
 
     const sourceArrPath = element.props?.source;
@@ -66,11 +71,15 @@ export function Renderer(props: RendererProps) {
         </Fragment>)}</>
     }
 
-
     const Component = allowedComponents[element.type] || element.type;
-    return <Component {...resolveProps(global, local, element.props)}>
+    const componentProps = resolveProps(global, local, element.props);
+    if(typeof Component === "string" && voidElements.has(Component)){
+        return <Component  {...componentProps} />
+    }
+
+    return <Component {...componentProps}>
         {renderContent(global, local, element.content)}
-        {childrenMap[element.id]?.map((childId: string, index: number) => {
+        {childrenMap[element.id] && childrenMap[element.id].map((childId: string, index: number) => {
             return <Renderer
                 key={index}
                 {...props}

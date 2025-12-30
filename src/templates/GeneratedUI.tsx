@@ -31,7 +31,7 @@ export interface GeneratedContentProps {
 export async function GeneratedUI(props: GeneratedContentProps) {
   const input = constructInput(props);
 
-  const { value, model, components, cached, onGenerate } = props;
+  const { value, model, components, placeholder, cached, onGenerate } = props;
   
   const allowedComponents = generateComponentMap(components || []);
 
@@ -72,5 +72,5 @@ export async function GeneratedUI(props: GeneratedContentProps) {
     if(onGenerate) onGenerate(total);
   })()
 
-  return <GeneratedClient value={value} allowedComponents={allowedComponents} inputStream={stream.value} />
+  return <GeneratedClient value={value} allowedComponents={allowedComponents} inputStream={stream.value} placeholder={placeholder} />
 }

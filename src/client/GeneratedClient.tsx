@@ -1,7 +1,7 @@
 "use client";
 
 import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 import { Renderer } from './Renderer';
 import { ResponseParser } from '../ResponseParser';
 import { UISchema } from '../types';
@@ -9,11 +9,13 @@ import { UISchema } from '../types';
 export function GeneratedClient({
   value,
   allowedComponents,
-  inputStream
+  inputStream,
+  placeholder
 }: {
   value: any,
   allowedComponents: Record<string, React.ComponentType<any> | string>,
-  inputStream: StreamableValue<string>
+  inputStream: StreamableValue<string>,
+  placeholder?: JSX.Element
 }) {
   const [message, setMessage] = useState('');
   const [schema, setUISchema] = useState<UISchema | null>();
@@ -39,7 +41,7 @@ export function GeneratedClient({
 
   return (
     <>
-      {schema?.root && <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={value} local={value} />}
+      {schema?.root ? <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={value} local={value} /> : <>{placeholder}</>}
     </>
   )
 }

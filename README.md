@@ -94,20 +94,6 @@ $ npm i @ai-sdk/anthropic (if you're using Claude)
  Dynamic state generation violates the semi-deterministic paradigm of <i>syntux</i>, and is thus not supported by design.
 </details>
 
-<details>
- <summary>How do generated components share information?</summary>
-
-  Use contexts.
-
- ```jsx
- <GeneratedPage schema={
-    <Context.Provider>
-        <GeneratedContent components={[ MyComponent ]} />
-    </Context.Provider>
-} />
-```
-</details>
-
 ---
 
 *syntux* is open source software, licensed under the [MIT](LICENSE) license.

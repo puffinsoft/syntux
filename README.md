@@ -20,6 +20,8 @@ https://github.com/user-attachments/assets/a930d35d-92ab-45f4-9f71-f7bc0380c4f1
 
 ### API
 
+<i>syntux</i> is built for React and Next.js.
+
 One component is all you need:
 
 ```jsx
@@ -35,6 +37,8 @@ const valueToDisplay = {
     hint="UI should look like..."   
 />
 ```
+
+*syntux* takes the `value` into consideration and designs a UI to best display it. `value` can be anything; an object, array or primitive.
 
 ### Installation
 
@@ -85,31 +89,58 @@ export default function Home(){
 }
 ```
 
-<sup>Note: <i>syntux</i> is built for Next.js. It likely works on other React frameworks, but isn't guaranteed.</sup>
+Use custom React components:
+
+```jsx
+import { CustomOne, CustomTwo } from '@/my_components'
+export default function Home(){
+   const valueToDisplay = { ... };
+
+   <GeneratedUI components={[
+    { name: 'Button', props: "{ color: string, text: string }", component: CustomOne },
+    { name: 'Input', props: "{ initial: string, disabled: boolean }", component: CustomTwo, context: "Creates an input field with an (initial) value. Can be disabled." }
+   ]} />
+}
+```
+
+See the [documentation](https://github.com/puffinsoft/syntux/wiki) for an in-depth explanation.
 
 ---
 
 ### FAQ
 
-**How does generation work?**
+<details>
+ <summary>How does generation work? (Does it generate source code?)</summary>
+
+Generated UIs must be *secure*, *reusable* and *cacheable*.
+
+As such, *syntux* does not generate source code. It generates a schema for the UI, known as a "React Interface Schema" (RIS). To get a better understanding, or to implement your own parser, see the [spec](src/templates/spec.md).
+
+The RIS **does not hardcode values**. It **binds** to properties of the `value` and has **built-in iterators**, making it reusable and token-efficient (for arrays).
+
+This schema is tailored to the `value` that you provide. It is then hydrated by *syntux* and rendered.
 
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/workflow.png)
+</details>
 
+<details>
+ <summary>How does caching work?</summary>
 
- Generated designs are designed to be *reusable* and *cacheable*.
+ The generated UI is determined by the React Interface Schema (see the above question).
 
- To do this, *syntux* generates a "React Interface Schema" (RIS). It's essentially an Abstract Syntax Tree tailored to the `value` that you pass in. This schema is then hydrated by *syntux* and rendered.
+ Thus, if the same schema is provided, the same UI will be generated.
 
- The RIS has built-in support for arrays, and thus can handle inputs of arbitrary lengths, making it cacheable. To get a better understanding, see the [LLM prompt itself](src/templates/spec.md).
+ For simplicity, the schema is simply a string. It is up to you how you wish to store it; in memory, in a file, in a database etc,.
 
-\-
+ Use the `onGenerate` and `cached` properties to retrieve/provide a cached schema respectively.
+</details>
 
 <details>
  <summary>What about state? Can state be generated?</summary>
  
- Non-stateful components should be wrapped in stateful components, then passed to *syntux* to generate.
+ Generating state is an anti-pattern and leads to poorly performing, insecure applications.
 
- Dynamic state generation violates the semi-deterministic paradigm of <i>syntux</i>, and is thus not supported by design.
+ If you need to handle state, wrap non-stateful components in stateful ones, then pass those as custom components to *syntux*.
 </details>
 
 ---

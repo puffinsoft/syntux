@@ -18,6 +18,43 @@ https://github.com/user-attachments/assets/a930d35d-92ab-45f4-9f71-f7bc0380c4f1
 
 ---
 
+### API
+
+One component is all you need:
+
+```jsx
+const valueToDisplay = {
+    "username": "John",
+    "email": "john@gmail.com",
+    "age": 22
+}
+
+<GeneratedUI
+    model={anthropic('claude-sonnet-4-5')}
+    value={valueToDisplay}
+    hint="UI should look like..."   
+/>
+```
+
+### Installation
+
+In the root of your project:
+
+```
+$ npx getsyntux@latest
+```
+
+This will automatically install the required components in the `lib/getsyntux` folder.
+
+We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers. To install the model providers:
+
+```
+$ npm i ai
+$ npm i @ai-sdk/anthropic (if you're using Claude)
+```
+
+---
+
 ### Examples
 
 Generate a UI based on `valueToDisplay` (can be anything, including arrays):
@@ -49,25 +86,6 @@ export default function Home(){
 ```
 
 <sup>Note: <i>syntux</i> is built for Next.js. It likely works on other React frameworks, but isn't guaranteed.</sup>
-
----
-
-### Installation
-
-In the root of your project:
-
-```
-$ npx getsyntux@latest
-```
-
-This will automatically install the required components in the `lib/getsyntux` folder.
-
-We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers. To install the model providers:
-
-```
-$ npm i ai
-$ npm i @ai-sdk/anthropic (if you're using Claude)
-```
 
 ---
 

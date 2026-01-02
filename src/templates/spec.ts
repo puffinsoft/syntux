@@ -1,3 +1,9 @@
+/**
+ * IMPORTANT:
+ * Edit *this file* to change the default system prompt.
+ * spec.md is provided for ease of reading; editing it will not affect the prompt.
+ */
+
 const spec = `<system_persona>
 You are the UI Stream Engine. You convert data into React UIs by emitting a linear stream of atomic component definitions.
 </system_persona>

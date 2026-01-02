@@ -3,11 +3,17 @@
 import { ComponentType, Fragment } from 'react'
 import { ChildrenMap, ComponentMap, SchemaNode } from '../types';
 
+/**
+ * lightweight implementation of lodash.get
+ */
 const resolvePath = (obj: any, path: string) => {
     if (path === '$') return obj;
     return path.split('.').reduce((acc, curr) => acc?.[curr], obj)
 }
 
+/**
+ * parses binding protocol and performs property lookup w/ scope resolution
+ */
 const get = (global: any, local: any, path: string) => {
     if (path.startsWith("$item.")) {
         path = path.slice(6)
@@ -18,6 +24,9 @@ const get = (global: any, local: any, path: string) => {
     }
 }
 
+/**
+ * recursively parses props for bindings, replacing with true values
+ */
 const resolveProps = (global: any, local: any, props: any) => {
     if (!props) return props;
     if ("$bind" in props) return get(global, local, props.$bind); // $bind may be falsy value
@@ -30,15 +39,9 @@ const resolveProps = (global: any, local: any, props: any) => {
     return props;
 }
 
-export interface RendererProps {
-    id: string;
-    componentMap: ComponentMap;
-    childrenMap: ChildrenMap;
-    allowedComponents: Record<string, ComponentType<any> | string>;
-    global: any;
-    local: any;
-}
-
+/**
+ * output node.content, with check for $bind
+*/
 const renderContent = (global: any, local: any, content: any) => {
     if (typeof content === "object") {
         return get(global, local, content.$bind);
@@ -52,6 +55,18 @@ const voidElements = new Set([
     'link', 'meta', 'param', 'source', 'track', 'wbr'
 ])
 
+export interface RendererProps {
+    id: string;
+    componentMap: ComponentMap;
+    childrenMap: ChildrenMap;
+    allowedComponents: Record<string, ComponentType<any> | string>;
+    global: any;
+    local: any;
+}
+
+/**
+ * Renders a UISchema recursively, in accordance to the spec.
+ */
 export function Renderer(props: RendererProps) {
     const {
         id, componentMap, childrenMap, global, local, allowedComponents

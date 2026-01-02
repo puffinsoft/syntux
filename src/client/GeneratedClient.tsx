@@ -6,6 +6,9 @@ import { Renderer } from './Renderer';
 import { ResponseParser } from '../ResponseParser';
 import { UISchema } from '../types';
 
+/**
+ * Client wrapper for Renderer that handles streaming and parsing with server.
+ */
 export function GeneratedClient({
   value,
   allowedComponents,
@@ -41,7 +44,9 @@ export function GeneratedClient({
 
   return (
     <>
-      {schema?.root ? <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={value} local={value} /> : <>{placeholder}</>}
+      {schema?.root ?
+        <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={value} local={value} />
+        : <>{placeholder}</>}
     </>
   )
 }

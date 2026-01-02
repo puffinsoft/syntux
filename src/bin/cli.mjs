@@ -23,6 +23,10 @@ function getInstallCommand(manager) {
     return "npm install getsyntux";
 }
 
+/**
+ * verifying
+ */
+
 const userRoot = process.cwd();
 const packageJsonPath = path.join(userRoot, 'package.json');
 
@@ -30,6 +34,10 @@ if (!fs.existsSync(packageJsonPath)) {
     console.log(chalk.magenta('getsyntux') + ': ' + chalk.red('Failed to find package.json. Run this command from your project root.'));
     process.exit(1);
 }
+
+/**
+ * installing
+ */
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const allDeps = {
@@ -63,6 +71,10 @@ if (allDeps['getsyntux']) {
         process.exit(1);
     }
 }
+
+/**
+ * copying
+ */
 
 const templateDir = path.resolve(__dirname, '../templates')
 const targetDir = path.resolve(process.cwd(), 'lib/getsyntux');

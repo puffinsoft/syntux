@@ -114,9 +114,7 @@ See the [documentation](https://github.com/puffinsoft/syntux/wiki) for an in-dep
 
 Generated UIs must be *secure*, *reusable* and *cacheable*.
 
-As such, *syntux* does not generate source code. It generates a schema for the UI, known as a "React Interface Schema" (RIS). To get a better understanding, or to implement your own parser, see the [spec](src/templates/spec.md).
-
-The RIS **does not hardcode values**. It **binds** to properties of the `value` and has **built-in iterators**, making it reusable and token-efficient (for arrays).
+As such, *syntux* does not generate source code. It generates a schema for the UI, known as a "React Interface Schema" (RIS). See the question below to get a better understanding.
 
 This schema is tailored to the `value` that you provide. It is then hydrated by *syntux* and rendered.
 
@@ -141,6 +139,27 @@ This schema is tailored to the `value` that you provide. It is then hydrated by 
  Generating state is an anti-pattern and leads to poorly performing, insecure applications.
 
  If you need to handle state, wrap non-stateful components in stateful ones, then pass those as custom components to *syntux*.
+</details>
+
+<details>
+ <summary>What does the React Interface Schema look like?</summary>
+ 
+ It's a list of JSON objects, each delimited by a newline. Each object contains information about the element/component, props, and an `id` and `parentId`.
+
+ The RIS **does not hardcode values**. It **binds** to properties of the `value` and has **built-in iterators** (with the `type` field), making it reusable and token-efficient (for arrays).
+
+ Originally (pre-v0.2.x), the schema was a deep JSON tree. However, post-v0.2.x it was switched to a flat JSON list, as this allows for the UI to be built progressively (streamed).
+
+ As such, the `id` and `parentId` fields are used to construct the tree as-you-go.
+
+ Below is an example:
+
+ ```json
+ {"id":"loop_1", "parentId":"root", "type":"__ForEach__", "props":{"source":"authors"}}
+{"id":"card_1", "parentId":"loop_1", "type":"div", "props":{"className":"card"}, "content": {"$bind": "$item.name"}}
+ ```
+
+ To get a better understanding, or to implement your own parser, see the [spec](https://raw.githubusercontent.com/puffinsoft/syntux/refs/heads/master/src/templates/spec.md).
 </details>
 
 ---

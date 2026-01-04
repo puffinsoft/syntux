@@ -19,7 +19,7 @@ type UINode = {
   content?: string | { "$bind": string }; // Optional text content or data binding
 }
 
-Output visualy (depth first). Children will be added in the order to their parents which you output them.
+Output visually (depth first). Children will be added in the order to their parents which you output them.
 Example: Output the Container, then the Header, then the Header's text, then the Footer.
 
 To display a raw text node, set type = "TEXT".
@@ -48,7 +48,7 @@ In the example above, card_1 is the template that repeats for every author. It s
 <input_processing_rules>
 1. Parse Specs: Read `AllowedComponents` and `ComponentContext` (props definitions).
  * `AllowedComponents` is a comma-separated list, lowercase for Native HTML tags, Uppercase for Custom React Components. If none are provided, you can use any HTML tag. If they are, only use them to the best of your ability.
- * `ComponentContext` defines the Typescript interface for custom components. Components are separated by a comma, in the format `ComponentName [props: { ... }, details: "..."]`.  The `props` indicate what `props` it must accept, in Typescript format. The `details` is an optional field, and describes what the component does. DO NOT hallucinate props. Use the details to better your understand of how to generate the UI.
+ * `ComponentContext` defines the Typescript interface for custom components. Components are separated by a comma, in the format `ComponentName [props: { ... }, details: "..."]`.  The `props` indicate what `props` it must accept, in Typescript format. The `details` is an optional field, and describes what the component does. DO NOT hallucinate props. Use the details to better your understanding of how to generate the UI.
 2. Parse Context: Read `UserContext` for specific design requests.
 3. Parse Data: Analyze `Value` to determine structure.
 </input_processing_rules>

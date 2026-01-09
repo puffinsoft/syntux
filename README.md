@@ -61,7 +61,9 @@ $ npm i @ai-sdk/anthropic (if you're using Claude)
 
 ### Examples
 
-Generate a UI based on `valueToDisplay` (can be anything, including arrays):
+#### Basic Example
+
+Generate a simple UI with a hint:
 
 ```jsx
 import { GeneratedUI } from "@/lib/getsyntux/GeneratedUI";
@@ -76,7 +78,9 @@ export default function Home(){
 }
 ```
 
-Cache generated UI for different `value`s based on a user ID:
+#### Caching
+
+Cache generated UI based on a user ID:
 
 ```jsx
 const cache: Map<number, string> = new Map();
@@ -89,7 +93,9 @@ export default function Home(){
 }
 ```
 
-Use custom React components:
+#### Custom components
+
+Use your own components, or someone else's (a library):
 
 ```jsx
 import { CustomOne, CustomTwo } from '@/my_components'
@@ -101,6 +107,12 @@ export default function Home(){
     { name: 'Input', props: "{ initial: string, disabled: boolean }", component: CustomTwo, context: "Creates an input field with an (initial) value. Can be disabled." }
    ]} />
 }
+```
+
+The component definitions (the `components` array above) can be generated automatically:
+
+```
+$ npx getsyntux generate-defs ./path/to/component.tsx
 ```
 
 See the [documentation](https://github.com/puffinsoft/syntux/wiki) for an in-depth explanation.

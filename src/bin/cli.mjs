@@ -1,113 +1,15 @@
 #!/usr/bin/env node
 
-import fs from 'fs-extra';
-import path, { dirname } from 'path';
-import { execSync } from 'child_process';
-import prompts from 'prompts';
-import chalk from 'chalk';
+import { Command } from "commander";
+import initCommand from "./commands/init.mjs";
+import generateDefsCommand from "./commands/generate.mjs";
 
-import { fileURLToPath } from 'url';
+const program = new Command();
+program.name("getsyntux").description("The declarative generative-UI library.")
+program.addCommand(initCommand)
+program.addCommand(generateDefsCommand)
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const args = process.argv.slice(2)
+if(args.length === 0) process.argv.splice(2, 0, "init")
 
-function getPackageManager(root) {
-    if (fs.existsSync(path.join(root, 'yarn.lock'))) return 'yarn';
-    if (fs.existsSync(path.join(root, 'pnpm-lock.yaml'))) return 'pnpm';
-    return 'npm';
-}
-
-function getInstallCommand(manager) {
-    if (manager === "yarn") return "yarn add getsyntux";
-    if (manager === "pnpm") return "pnpm add getsyntux";
-    return "npm install getsyntux";
-}
-
-/**
- * verifying
- */
-
-const userRoot = process.cwd();
-const packageJsonPath = path.join(userRoot, 'package.json');
-
-if (!fs.existsSync(packageJsonPath)) {
-    console.log(chalk.magenta('getsyntux') + ': ' + chalk.red('Failed to find package.json. Run this command from your project root.'));
-    process.exit(1);
-}
-
-/**
- * installing
- */
-
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-const allDeps = {
-    ...packageJson.dependencies,
-    ...packageJson.devDependencies
-};
-
-if (allDeps['getsyntux']) {
-    console.log(chalk.magenta('getsyntux') + `: library has already been installed. Continuing...`);
-} else {
-    console.log(chalk.magenta('getsyntux') + `: library not detected in package.json. Please install to continue...`);
-    const packageManager = getPackageManager(userRoot);
-    const command = getInstallCommand(packageManager);
-    const response = await prompts({
-        type: 'select',
-        name: 'install',
-        message: `Run ${command}?`,
-        choices: [{ title: 'Yes' }, { title: 'No' }],
-    })
-
-    if (response.install !== 0) {
-        console.log(chalk.magenta('getsyntux') + ': installation cancelled.');
-        process.exit(0);
-    }
-
-    try {
-        execSync(command, { stdio: 'inherit' });
-        console.log(chalk.magenta('getsyntux') + ': installed from ' + chalk.green(packageManager) + ' successfully.');
-    } catch (error) {
-        console.log(chalk.magenta('getsyntux') + ': installation ' + chalk.red('failed') + ' from ' + packageManager + '.');
-        process.exit(1);
-    }
-}
-
-/**
- * copying
- */
-
-const templateDir = path.resolve(__dirname, '../templates')
-const targetDir = path.resolve(process.cwd(), 'lib/getsyntux');
-
-if (!fs.existsSync(templateDir)) {
-    console.log(chalk.magenta('getsyntux') + ': ' + chalk.red("failed to find template directory. This is not your fault."));
-    process.exit(1);
-}
-
-console.log(chalk.magenta('getsyntux') + ': generating files...');
-
-if(fs.existsSync(targetDir)){
-    const files = fs.readdirSync(targetDir);
-    if(files.length > 0){
-        console.log(chalk.magenta('getsyntux') + `: target directory lib/getsyntux already contains files.`);
-        const response = await prompts({
-            type: 'select',
-            name: 'copy',
-            message: `Empty directory?`,
-            choices: [{ title: 'Yes' }, { title: 'No' }],
-        })
-    
-        if (response.copy !== 0) {
-            console.log(chalk.magenta('getsyntux') + ': installation cancelled.');
-            process.exit(0);
-        }
-
-        fs.emptyDirSync(targetDir);
-    }
-}
-
-fs.copySync(templateDir, targetDir, {
-    overwrite: true,
-    errorOnExist: false
-})
-console.log(chalk.magenta('getsyntux') + ': ' + chalk.green('installation complete.'));
+program.parse(process.argv)

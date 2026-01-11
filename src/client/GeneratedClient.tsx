@@ -20,7 +20,6 @@ export function GeneratedClient({
   inputStream: StreamableValue<string>,
   placeholder?: JSX.Element
 }) {
-  const [message, setMessage] = useState('');
   const [schema, setUISchema] = useState<UISchema | null>();
   const parser = useRef<ResponseParser | null>(null);
 
@@ -31,7 +30,6 @@ export function GeneratedClient({
 
     const parseStream = async () => {
       for await (const delta of readStreamableValue(inputStream)) {
-        setMessage((prev) => prev + delta);
         if (parser.current && delta !== undefined) {
           parser.current.addDelta(delta);
           setUISchema(parser.current.schema);

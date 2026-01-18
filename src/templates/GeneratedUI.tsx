@@ -15,6 +15,11 @@ export interface GeneratedContentProps {
     hint?: string;
     placeholder?: JSX.Element;
     cached?: string;
+    /*
+    * ^ this is a string for two reasons:
+    * - it is easier to store
+    * - it is parsed then mutated at runtime. This avoids unintended side effects.
+    */
     onGenerate?: (arg0: string) => void
 }
 

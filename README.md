@@ -9,7 +9,7 @@
 https://github.com/user-attachments/assets/a930d35d-92ab-45f4-9f71-f7bc0380c4f1
 
 - ⚡ **Streamable** - display UI as you generate.
-- 🎨 **Custom Components** - maintain aesthetics and reusability.
+- 🎨 **Custom Components** - use your own React components.
 - 💾 **Cacheable** - reuse generated UIs with new values.
 
 ⚠️ this library is still in **beta**. All npm versions are **stable**, but the API may change across versions.

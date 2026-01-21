@@ -40,7 +40,7 @@ export function constructInput({
     const userContext = hint;
     const inputValue = JSON.stringify(skeletonize ? create_skeleton(value) : value)
 
-    return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${userContext || ""}</UserContext>\n<IsSkeleton>${create_skeleton.toString()}</IsSkeleton>\n<Value>\n${inputValue}</Value>`
+    return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${userContext || ""}</UserContext>\n<IsSkeleton>${skeletonize.toString()}</IsSkeleton>\n<Value>\n${inputValue}\n</Value>`
 }
 
 /**

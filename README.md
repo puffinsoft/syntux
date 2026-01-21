@@ -40,6 +40,9 @@ const valueToDisplay = {
 
 *syntux* takes the `value` into consideration and designs a UI to best display it. `value` can be anything; an object, array or primitive.
 
+> [!TIP]
+> If you are passing in a **large array** as a value, or an object with untrusted input, use the `skeletonize` property. See [the explanation](https://github.com/puffinsoft/syntux/wiki/FAQ#handling-untrusted-input--large-arrays).
+
 ### Installation
 
 In the root of your project:
@@ -120,6 +123,12 @@ See the [documentation](https://github.com/puffinsoft/syntux/wiki) for an in-dep
 ---
 
 ### FAQ
+
+<details>
+ <summary>How expensive is generation?</summary>
+
+*syntux* is highly optimized to save tokens. See [here](https://github.com/puffinsoft/syntux/wiki/FAQ#how-expensive-is-this) for a cost estimation table and an explanation.
+</details>
 
 <details>
  <summary>How does generation work? (Does it generate source code?)</summary>

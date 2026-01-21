@@ -11,7 +11,6 @@ import spec from './spec';
 export interface GeneratedContentProps {
     value: any;
     model: LanguageModel;
-    skeletonize?: boolean;
     components?: (SyntuxComponent | string)[];
     hint?: string;
     placeholder?: JSX.Element;
@@ -21,7 +20,8 @@ export interface GeneratedContentProps {
     * - it is easier to store
     * - it is parsed then mutated at runtime. This avoids unintended side effects.
     */
-    onGenerate?: (arg0: string) => void
+   onGenerate?: (arg0: string) => void;
+   skeletonize?: boolean;
 }
 
 /**
@@ -33,6 +33,7 @@ export interface GeneratedContentProps {
  * @param placeholder A placeholder to show while awaiting streaming (NOT during streaming)
  * @param cached Schema returned from onGenerate, used for caching UI
  * @param onGenerate Callback which accepts a string, to be passed to `cached` to reuse same UI
+ * @param skeletonize Compresses value for large inputs (arrays) or untrusted input
 */
 export async function GeneratedUI(props: GeneratedContentProps) {
   const input = constructInput(props);

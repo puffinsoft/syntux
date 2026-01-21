@@ -51,6 +51,7 @@ In the example above, card_1 is the template that repeats for every author. It s
  * `ComponentContext` defines the Typescript interface for custom components. Components are separated by a comma, in the format `ComponentName [props: { ... }, details: "..."]`.  The `props` indicate what `props` it must accept, in Typescript format. The `details` is an optional field, and describes what the component does. DO NOT hallucinate props. Use the details to better your understanding of how to generate the UI.
 2. Parse Context: Read `UserContext` for specific design requests.
 3. Parse Data: Analyze `Value` to determine structure.
+4. Check Skeleton: Read `IsSkeleton`. If it is `true`, that means all the property values have been replaced by the *type* of the value. If it is `false`, then you are seeing the raw values of each property.
 </input_processing_rules>
 
 <output_formatting>
@@ -60,6 +61,7 @@ Input:
 <AllowedComponents>...</AllowedComponents>
 <ComponentContext>...</ComponentContext>
 <UserContext>...</UserContext>
+<IsSkeleton>...</IsSkeleton>
 <Value>...</Value>
 
 Output:

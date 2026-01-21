@@ -1,10 +1,9 @@
 "use client";
 
 import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
-import React, { JSX, useEffect, useRef, useState } from 'react';
+import React, { JSX, useEffect, useReducer, useRef, useState } from 'react';
 import { Renderer } from './Renderer';
 import { ResponseParser } from '../ResponseParser';
-import { UISchema } from '../types';
 
 /**
  * Client wrapper for Renderer that handles streaming and parsing with server.
@@ -20,7 +19,7 @@ export function GeneratedClient({
   inputStream: StreamableValue<string>,
   placeholder?: JSX.Element
 }) {
-  const [schema, setUISchema] = useState<UISchema | null>();
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
   const parser = useRef<ResponseParser | null>(null);
 
   useEffect(() => {
@@ -31,14 +30,20 @@ export function GeneratedClient({
     const parseStream = async () => {
       for await (const delta of readStreamableValue(inputStream)) {
         if (parser.current && delta !== undefined) {
-          parser.current.addDelta(delta);
-          setUISchema(parser.current.schema);
+          if(parser.current.addDelta(delta)){
+            forceUpdate();
+          }
         }
       }
     };
 
-    parseStream();
+    parseStream().then(() => {
+      parser.current.finish();
+      forceUpdate();
+    });
   }, [inputStream]);
+
+  const schema = parser?.current?.schema;
 
   return (
     <>

@@ -11,6 +11,7 @@ import spec from './spec';
 export interface GeneratedContentProps {
     value: any;
     model: LanguageModel;
+    skeletonize?: boolean;
     components?: (SyntuxComponent | string)[];
     hint?: string;
     placeholder?: JSX.Element;

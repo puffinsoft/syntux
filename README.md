@@ -6,7 +6,7 @@
 
 ---
 
-https://github.com/user-attachments/assets/a930d35d-92ab-45f4-9f71-f7bc0380c4f1
+https://github.com/user-attachments/assets/694d4646-c36d-4c19-a111-86e546484101
 
 - ⚡ **Streamable** - display UI as you generate.
 - 🎨 **Custom Components** - use your own React components.

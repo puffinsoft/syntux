@@ -17,7 +17,9 @@ export class ResponseParser {
      * Update schema with latest data chunk.
      * 
      * Handles multiline input gracefully; can be used to load entire schemas from cache.
+     * 
      * @param delta delta from stream.
+     * @returns true if update is warranted, false otherwise.
      */
     addDelta(delta: string) {
         this.buffer += delta;
@@ -25,7 +27,9 @@ export class ResponseParser {
         if (split.length > 1) {
             split.slice(0, split.length - 1).forEach((line) => this.handleLine(line));
             this.buffer = split[split.length - 1];
+            return true;
         }
+        return false;
     }
 
     /**

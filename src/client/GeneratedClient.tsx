@@ -23,14 +23,13 @@ export function GeneratedClient({
   const parser = useRef<ResponseParser | null>(null);
 
   useEffect(() => {
-    if (!parser.current) {
-      parser.current = new ResponseParser();
-    }
+    // forcibly create a new one for HMR
+    parser.current = new ResponseParser();
 
     const parseStream = async () => {
       for await (const delta of readStreamableValue(inputStream)) {
         if (parser.current && delta !== undefined) {
-          if(parser.current.addDelta(delta)){
+          if (parser.current.addDelta(delta)) {
             forceUpdate();
           }
         }

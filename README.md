@@ -12,7 +12,7 @@ https://github.com/user-attachments/assets/694d4646-c36d-4c19-a111-86e546484101
 - 🎨 **Custom Components** - use your own React components.
 - 💾 **Cacheable** - reuse generated UIs with new values.
 
-⚠️ this library is still in **beta**. All npm versions are **stable**, but the API may change across versions.
+**How does it work?** *syntux* generates a JSON-DSL to represent the UI, known as the React Interface Schema. The specifics are in the FAQ [below](#faq).
 
 <h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
 

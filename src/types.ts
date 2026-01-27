@@ -24,3 +24,9 @@ export type SyntuxComponent = {
     component: React.ComponentType<any>;
     context?: string;
 }
+
+export type ContextfulAction = {
+    fn: Function,
+    params: string,
+    context: string
+}

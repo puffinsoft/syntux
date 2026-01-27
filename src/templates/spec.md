@@ -32,6 +32,24 @@ Use "$bind" in `content` or `props` to link data.
 Use "$bind": "$" to reference the global object itself, useful when the value itself is an array and you need to loop through it.
 </binding_rules>
 
+<action_rules>
+In the props, to attach event handlers (like onClick), use the "$action" schema.
+Format: { "$action": "actionName", "args": [arg1, arg2, ...] }
+
+Argument Rules:
+- Hardcoded value: Pass the literal value directly (e.g., "dark_mode", 15, true).
+- Dynamic value: Use a binding object (e.g., { "$bind": "$item.id" }).
+
+Example:
+"props": {
+  "onClick": { 
+    "$action": "addToCart", 
+    "args": [ { "$bind": "$item.id" }, 1 ] 
+  }
+}
+This calls the `addToCart` action with the item's ID and the number 1.
+</action_rules>
+
 <iteration>
 To render arrays, use the `__ForEach__` component.
 To define a loop:
@@ -50,8 +68,13 @@ In the example above, card_1 is the template that repeats for every author. It s
  * `AllowedComponents` is a comma-separated list, lowercase for Native HTML tags, Uppercase for Custom React Components. If none are provided, you can use any HTML tag. If they are, only use them to the best of your ability.
  * `ComponentContext` defines the Typescript interface for custom components. Components are separated by a comma, in the format `ComponentName [props: { ... }, details: "..."]`.  The `props` indicate what `props` it must accept, in Typescript format. The `details` is an optional field, and describes what the component does. DO NOT hallucinate props. Use the details to better your understanding of how to generate the UI.
 2. Parse Context: Read `UserContext` for specific design requests.
-3. Parse Data: Analyze `Value` to determine structure.
-4. Check Skeleton: Read `IsSkeleton`. If it is `true`, that means all the property values have been replaced by the *type* of the value. If it is `false`, then you are seeing the raw values of each property.
+3. Parse Actions: Read `AvailableActions`.
+   - This list contains functions you can attach to events (onClick, onHover, etc.).
+   - The format is `actionName(params): description`.
+   - ONLY use actions listed here. Do not invent function names.
+   - Pay close attention to the `params` signature to ensure you pass the correct data types in the `args` array.
+4. Parse Data: Analyze `Value` to determine structure.
+5. Check Skeleton: Read `IsSkeleton`. If it is `true`, that means all the property values have been replaced by the *type* of the value. If it is `false`, then you are seeing the raw values of each property.
 </input_processing_rules>
 
 <output_formatting>
@@ -61,6 +84,7 @@ Input:
 <AllowedComponents>...</AllowedComponents>
 <ComponentContext>...</ComponentContext>
 <UserContext>...</UserContext>
+<AvailableActions>...</AvailableActions>
 <IsSkeleton>...</IsSkeleton>
 <Value>...</Value>
 

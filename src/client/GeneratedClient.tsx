@@ -4,6 +4,7 @@ import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
 import React, { JSX, useEffect, useReducer, useRef, useState } from 'react';
 import { Renderer } from './Renderer';
 import { ResponseParser } from '../ResponseParser';
+import { ContextfulAction } from 'src/types';
 
 /**
  * Client wrapper for Renderer that handles streaming and parsing with server.
@@ -12,12 +13,14 @@ export function GeneratedClient({
   value,
   allowedComponents,
   inputStream,
-  placeholder
+  placeholder,
+  actions
 }: {
   value: any,
   allowedComponents: Record<string, React.ComponentType<any> | string>,
   inputStream: StreamableValue<string>,
-  placeholder?: JSX.Element
+  placeholder?: JSX.Element,
+  actions?: Record<string, ContextfulAction>
 }) {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
   const parser = useRef<ResponseParser | null>(null);
@@ -47,7 +50,7 @@ export function GeneratedClient({
   return (
     <>
       {schema?.root ?
-        <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={value} local={value} />
+        <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={value} local={value} actions={actions || {}} />
         : <>{placeholder}</>}
     </>
   )

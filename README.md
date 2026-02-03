@@ -112,13 +112,26 @@ export default function Home(){
 }
 ```
 
-The component definitions (the `components` array above) can be generated automatically:
+<sup>
 
-```
-$ npx getsyntux generate-defs ./path/to/component.tsx
-```
+**Note**: the `components` array above can be generated automatically with `npx getsyntux generate-defs <component.tsx>`. See the [documentation](https://github.com/puffinsoft/syntux/wiki).
 
-See the [documentation](https://github.com/puffinsoft/syntux/wiki) for an in-depth explanation.
+</sup>
+
+#### Custom actions
+
+Perform server actions, attached automatically to component events:
+
+```jsx
+export default function Home(){
+   const valueToDisplay = { ... };
+
+   <GeneratedUI actions = {{
+    "delete": defineTool(async (id: string) => { "use server"; /* ... */ }, "id: string", "deletes post with id"),
+    "refresh": defineTool(async () => { "use server"; /* ... */})
+   }} />
+}
+```
 
 ---
 

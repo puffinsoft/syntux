@@ -123,6 +123,8 @@ export default function Home(){
 Perform server actions, attached automatically to component events:
 
 ```jsx
+import { defineTool } from "getsyntux";
+
 export default function Home(){
    const valueToDisplay = { ... };
 
@@ -132,6 +134,10 @@ export default function Home(){
    }} />
 }
 ```
+
+The name of the action should specify its purpose (it is seen by the LLM).
+
+Use `defineTool` to add further context to actions. See the [documentation](https://github.com/puffinsoft/syntux/wiki).
 
 ---
 

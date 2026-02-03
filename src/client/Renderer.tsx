@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentType, Fragment } from 'react'
-import { ChildrenMap, ComponentMap, SchemaNode } from '../types';
+import { ChildrenMap, ComponentMap, ContextfulAction, SchemaNode } from '../types';
 
 /**
  * lightweight implementation of lodash.get
@@ -27,13 +27,30 @@ const get = (global: any, local: any, path: string) => {
 /**
  * recursively parses props for bindings, replacing with true values
  */
-const resolveProps = (global: any, local: any, props: any) => {
+const resolveProps = (global: any, local: any, props: any, actions: Record<string, ContextfulAction>) => {
     if (!props) return props;
+    if ("$action" in props) {
+        const action = actions[props.$action];
+        if (!action) return () => { };
+
+        const resolvedArgs = props.args.map((arg: any) => {
+            if (arg && typeof arg === "object" && "$bind" in arg) {
+                return get(global, local, arg.$bind);
+            } else {
+                return arg;
+            }
+        })
+
+        return (e: any) => {
+            action.fn(...resolvedArgs)
+        }
+    }
+
     if ("$bind" in props) return get(global, local, props.$bind); // $bind may be falsy value
     Object.keys(props).forEach((key) => {
         const val = props[key];
         if (typeof val === "object") {
-            props[key] = resolveProps(global, local, val);
+            props[key] = resolveProps(global, local, val, actions);
         }
     })
     return props;
@@ -62,6 +79,7 @@ export interface RendererProps {
     allowedComponents: Record<string, ComponentType<any> | string>;
     global: any;
     local: any;
+    actions: Record<string, ContextfulAction>;
 }
 
 /**
@@ -69,7 +87,7 @@ export interface RendererProps {
  */
 export function Renderer(props: RendererProps) {
     const {
-        id, componentMap, childrenMap, global, local, allowedComponents
+        id, componentMap, childrenMap, global, local, allowedComponents, actions
     } = props;
     const element = componentMap[id];
 
@@ -87,8 +105,8 @@ export function Renderer(props: RendererProps) {
     }
 
     const Component = allowedComponents[element.type] || element.type;
-    const componentProps = resolveProps(global, local, element.props);
-    if(typeof Component === "string" && voidElements.has(Component)){
+    const componentProps = resolveProps(global, local, element.props, actions);
+    if (typeof Component === "string" && voidElements.has(Component)) {
         return <Component  {...componentProps} />
     }
 

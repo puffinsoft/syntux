@@ -134,10 +134,11 @@ export default function Home(){
    }} />
 }
 ```
+<sup>
 
-The name of the action should specify its purpose (it is seen by the LLM).
+**Note**: The name of the action should specify its purpose (it is seen by the LLM). Use `defineTool` to add further context to actions. See the [documentation](https://github.com/puffinsoft/syntux/wiki).
 
-Use `defineTool` to add further context to actions. See the [documentation](https://github.com/puffinsoft/syntux/wiki).
+</sup>
 
 ---
 

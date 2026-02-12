@@ -1,7 +1,11 @@
 ![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/banner.png)
 
 <p align="center">
-<i>syntux</i> is the generative UI library for the web. It lets you build generative UIs that are <b><i>consistent</i></b> and <b><i>flexible</i></b>.
+<i>syntux</i> is the generative UI library for the web.
+</p>
+
+<p align="center">
+You give it a <code>value</code> and it designs the UI to display it.
 </p>
 
 ---

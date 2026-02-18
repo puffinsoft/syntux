@@ -24,6 +24,8 @@ const get = (global: any, local: any, path: string) => {
     }
 }
 
+
+const blacklistedProps = new Set(["dangerouslySetInnerHTML"])
 /**
  * recursively parses props for bindings, replacing with true values
  */
@@ -46,8 +48,22 @@ const resolveProps = (global: any, local: any, props: any, actions: Record<strin
         }
     }
 
-    if ("$bind" in props) return get(global, local, props.$bind); // $bind may be falsy value
+    if ("$bind" in props) { // $bind may be falsy value
+        const resolved = get(global, local, props.$bind);
+        Object.keys(resolved).forEach((key) => {
+            if(blacklistedProps.has(key)){
+                delete resolved[key];
+            }
+        })
+        return resolved;
+    }
+
     Object.keys(props).forEach((key) => {
+        if (blacklistedProps.has(key)) {
+            delete props[key];
+            return;
+        }
+
         const val = props[key];
         if (typeof val === "object") {
             props[key] = resolveProps(global, local, val, actions);
@@ -113,7 +129,7 @@ export function Renderer(props: RendererProps) {
 
     const nodesToRender = [contentNode, ...childNodes].filter(node => node !== null && node !== undefined) // 0 is falsy
 
-    if(nodesToRender.length > 0){
+    if (nodesToRender.length > 0) {
         return <Component {...componentProps}>
             {nodesToRender}
         </Component>

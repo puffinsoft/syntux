@@ -122,6 +122,8 @@ export default function Home(){
 
 </sup>
 
+Make sure components are marked with `"use client"`.
+
 #### Custom actions
 
 Perform server actions, attached automatically to component events:

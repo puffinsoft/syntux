@@ -67,11 +67,6 @@ const renderContent = (global: any, local: any, content: any) => {
     }
 }
 
-const voidElements = new Set([
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-    'link', 'meta', 'param', 'source', 'track', 'wbr'
-])
-
 export interface RendererProps {
     id: string;
     componentMap: ComponentMap;
@@ -106,18 +101,23 @@ export function Renderer(props: RendererProps) {
 
     const Component = allowedComponents[element.type] || element.type;
     const componentProps = resolveProps(global, local, element.props, actions);
-    if (typeof Component === "string" && voidElements.has(Component)) {
-        return <Component  {...componentProps} />
+
+    const contentNode = renderContent(global, local, element.content);
+    const childNodes = childrenMap[element.id]?.map((childId: string, index: number) => {
+        return <Renderer
+            key={index}
+            {...props}
+            id={childId}
+        />
+    }) || []
+
+    const nodesToRender = [contentNode, ...childNodes].filter(node => node !== null && node !== undefined) // 0 is falsy
+
+    if(nodesToRender.length > 0){
+        return <Component {...componentProps}>
+            {nodesToRender}
+        </Component>
     }
 
-    return <Component {...componentProps}>
-        {renderContent(global, local, element.content)}
-        {childrenMap[element.id] && childrenMap[element.id].map((childId: string, index: number) => {
-            return <Renderer
-                key={index}
-                {...props}
-                id={childId}
-            />
-        })}
-    </Component>
+    return <Component {...componentProps} />
 }

@@ -1,7 +1,7 @@
 {
   "name": "getsyntux",
   "version": "0.6.0",
-  "description": "The declarative generative-UI library.",
+  "description": "Build generative UIs for the web.",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

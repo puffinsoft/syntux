@@ -2,9 +2,9 @@
 
 import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
 import React, { JSX, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Renderer } from './Renderer';
-import { ResponseParser } from '../ResponseParser';
 import { ContextfulAction } from 'src/types';
+import { ResponseParser } from '../ResponseParser';
+import { Renderer } from './Renderer';
 import { SyntuxContext } from './SyntuxContext';
 
 /**
@@ -15,17 +15,20 @@ export function GeneratedClient({
   allowedComponents,
   inputStream,
   placeholder,
-  actions
+  actions,
+  errorFallback
 }: {
   value: any,
   allowedComponents: Record<string, React.ComponentType<any> | string>,
   inputStream: StreamableValue<string>,
   placeholder?: JSX.Element,
-  actions?: Record<string, ContextfulAction>
+  actions?: Record<string, ContextfulAction>,
+  errorFallback?: JSX.Element
 }) {
   const [statefulValue, setStatefulValue] = useState(value); // stateful because changeable through context
   const [, forceUpdate] = useReducer(x => x + 1, 0);
   const parser = useRef<ResponseParser | null>(null);
+  const [errored, setErrored] = useState(false)
 
   useEffect(() => {
     // forcibly create a new one for HMR
@@ -44,6 +47,8 @@ export function GeneratedClient({
     parseStream().then(() => {
       parser.current.finish();
       forceUpdate();
+    }).catch(() => {
+      setErrored(true)
     });
   }, [inputStream]);
 
@@ -51,12 +56,20 @@ export function GeneratedClient({
 
   const providerValue = useMemo(() => ({ value: statefulValue, setValue: setStatefulValue }), [statefulValue]);
 
+  const renderContent = () => {
+    if(errored && errorFallback) return <>{errorFallback}</>
+
+    if(schema?.root){
+      return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} actions={actions || {}} /> 
+    } else {
+      return <>{placeholder}</>
+    }
+  }
+
   return (
     <>
       <SyntuxContext.Provider value={providerValue}>
-        {schema?.root ?
-          <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} actions={actions || {}} />
-          : <>{placeholder}</>}
+        {renderContent()}
       </SyntuxContext.Provider >
     </>
   )

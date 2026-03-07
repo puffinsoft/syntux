@@ -124,6 +124,24 @@ export default function Home(){
 
 Make sure components are marked with `"use client"`.
 
+#### Update value (interactivity)
+
+Use the `useSyntux` hook to retrieve and update the `value` inside a custom component:
+
+```jsx
+"use client";
+
+export default function CustomComponent(){
+    const { value, setValue } = useSyntux();
+
+    return (
+        <button onClick={() => {
+            setValue("new value!")
+        }}>${value}</button>
+    );
+}
+```
+
 #### Custom actions
 
 Perform server actions, attached automatically to component events:

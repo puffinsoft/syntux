@@ -79,7 +79,9 @@ export async function GeneratedUI(props: GeneratedContentProps) {
         errored = true;
 
         if (!onError) {
-          throw err;
+          if (!errorFallback) {
+            throw err;
+          }
         } else {
           onError(err)
         }

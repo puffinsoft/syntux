@@ -109,7 +109,7 @@ import { CustomOne, CustomTwo } from '@/my_components'
 export default function Home(){
    const valueToDisplay = { ... };
 
-   <GeneratedUI components={[
+   return <GeneratedUI components={[
     { name: 'Button', props: "{ color: string, text: string }", component: CustomOne },
     { name: 'Input', props: "{ initial: string, disabled: boolean }", component: CustomTwo, context: "Creates an input field with an (initial) value. Can be disabled." }
    ]} />
@@ -134,11 +134,11 @@ Use the `useSyntux` hook to retrieve and update the `value` inside a custom comp
 export default function CustomComponent(){
     const { value, setValue } = useSyntux();
 
-    return (
-        <button onClick={() => {
-            setValue("new value!")
-        }}>${value}</button>
-    );
+    return <button onClick={() => {
+        const newArr = [...value];
+        newArr.push({ ... });
+        setValue(newArr);
+    }}>Add value</button>
 }
 ```
 
@@ -152,7 +152,7 @@ import { defineTool } from "getsyntux";
 export default function Home(){
    const valueToDisplay = { ... };
 
-   <GeneratedUI actions = {{
+   return <GeneratedUI actions = {{
     "delete": defineTool(async (id: string) => { "use server"; /* ... */ }, "id: string", "deletes post with id"),
     "refresh": defineTool(async () => { "use server"; /* ... */})
    }} />

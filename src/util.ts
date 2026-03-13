@@ -47,7 +47,7 @@ export function constructInput({
         }).join('\n') + "\n"
     }
 
-    const inputValue = JSON.stringify(skeletonize ? create_skeleton(value) : value)
+    const inputValue = JSON.stringify(skeletonize ? createSkeleton(value) : value)
 
     return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${userContext || ""}</UserContext>\n<AvailableActions>${availableActions}</AvailableActions>\n<IsSkeleton>${skeletonize.toString()}</IsSkeleton>\n<Value>\n${inputValue}\n</Value>`
 }
@@ -58,7 +58,7 @@ export function constructInput({
  * 
  * *important*: assumes arrays are non-polymorphic
  */
-export function create_skeleton(input: any) {
+export function createSkeleton(input: any) {
     if (input === null) return "null";
 
     if (typeof input !== "object") return typeof input;
@@ -67,11 +67,11 @@ export function create_skeleton(input: any) {
         if (input.length == 0) {
             return "null"; // ignore this field completely
         } else {
-            return [create_skeleton(input[0])]
+            return [createSkeleton(input[0])]
         }
     }
     return Object.entries(input).reduce((acc, [key, value]) => {
-        acc[key] = create_skeleton(value);
+        acc[key] = createSkeleton(value);
         return acc;
     }, {})
 }

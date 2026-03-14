@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/694d4646-c36d-4c19-a111-86e546484101
 
 *syntux* is designed to **display data**. Do not let this fact intimidate you - that is simply a testament to how token-efficient it is.
 
-For instance, if you provide an array `value` with 10,000 items, it will cost you the same as one with 10 items. **That is how efficient syntux is**. [[faq: how expensive is this?]](https://github.com/puffinsoft/syntux/wiki/FAQ#how-expensive-is-this)
+For instance, if you provide an array `value` with 10,000 items, it will cost you the same as one with 10 items. **That is how efficient syntux is**. [[cost estimation]](https://docs.getsyntux.com/advanced#cost-estimation)
 
 ### Features
 
@@ -24,7 +24,7 @@ For instance, if you provide an array `value` with 10,000 items, it will cost yo
 
 **How does it work?** *syntux* generates a JSON-DSL to represent the UI, known as the React Interface Schema. The specifics are in the FAQ [below](#faq).
 
-<h3 align="center" margin="0"><a href="https://github.com/puffinsoft/syntux/wiki">➡️ view documentation</a></h3>
+<h3 align="center" margin="0"><a href="https://docs.getsyntux.com/">➡️ view documentation</a></h3>
 
 ---
 
@@ -51,7 +51,7 @@ const valueToDisplay = {
 *syntux* takes the `value` into consideration and designs a UI to best display it. `value` can be anything; an object, array or primitive.
 
 > [!TIP]
-> If you are passing in a **large array** as a value, or an object with untrusted input, use the `skeletonize` property. See [the explanation](https://github.com/puffinsoft/syntux/wiki/FAQ#handling-untrusted-input--large-arrays).
+> If you are passing in a **large array** as a value, or an object with untrusted input, use the `skeletonize` property. See [the explanation](https://docs.getsyntux.com/advanced#skeletonize-property).
 
 ### Installation
 
@@ -124,7 +124,7 @@ export default function Home(){
 
 <sup>
 
-**Note**: the `components` array above can be generated automatically with `npx getsyntux generate-defs <component.tsx>`. See the [documentation](https://github.com/puffinsoft/syntux/wiki).
+**Note**: the `components` array above can be generated automatically with `npx getsyntux generate-defs <component.tsx>`. See the [documentation](https://docs.getsyntux.com/api#generate-defs).
 
 </sup>
 
@@ -166,7 +166,7 @@ export default function Home(){
 ```
 <sup>
 
-**Note**: The name of the action should specify its purpose (it is seen by the LLM). Use `defineTool` to add further context to actions. See the [documentation](https://github.com/puffinsoft/syntux/wiki).
+**Note**: The name of the action should specify its purpose (it is seen by the LLM). Use `defineTool` to add further context to actions. See the [documentation](https://docs.getsyntux.com/api#definetool).
 
 </sup>
 
@@ -177,7 +177,7 @@ export default function Home(){
 <details>
  <summary>How expensive is generation?</summary>
 
-*syntux* is highly optimized to save tokens. See [here](https://github.com/puffinsoft/syntux/wiki/FAQ#how-expensive-is-this) for a cost estimation table and an explanation.
+*syntux* is highly optimized to save tokens. See [here](https://docs.getsyntux.com/advanced#cost-estimation) for a cost estimation table and an explanation.
 </details>
 
 <details>

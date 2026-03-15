@@ -10,7 +10,7 @@ You give it a <code>value</code> and it designs the UI to display it.
 
 ---
 
-https://github.com/user-attachments/assets/694d4646-c36d-4c19-a111-86e546484101
+https://github.com/user-attachments/assets/fc159bb3-345b-48af-98d6-bfba302dd0ba
 
 *syntux* is designed to **display data**. Do not let this fact intimidate you - that is simply a testament to how token-efficient it is.
 

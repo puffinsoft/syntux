@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, Fragment } from 'react'
+import { ComponentType, Fragment, useEffect, useState } from 'react'
 import { ChildrenMap, ComponentMap, ContextfulAction, SchemaNode } from '../types';
 
 /**
@@ -51,7 +51,7 @@ const resolveProps = (global: any, local: any, props: any, actions: Record<strin
     if ("$bind" in props) { // $bind may be falsy value
         const resolved = get(global, local, props.$bind);
         Object.keys(resolved).forEach((key) => {
-            if(blacklistedProps.has(key)){
+            if (blacklistedProps.has(key)) {
                 delete resolved[key];
             }
         })
@@ -97,6 +97,13 @@ export interface RendererProps {
  * Renders a UISchema recursively, in accordance to the spec.
  */
 export function Renderer(props: RendererProps) {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => setIsVisible(true));
+        return () => cancelAnimationFrame(frame)
+    }, [])
+
     const {
         id, componentMap, childrenMap, global, local, allowedComponents, actions
     } = props;
@@ -118,6 +125,15 @@ export function Renderer(props: RendererProps) {
     const Component = allowedComponents[element.type] || element.type;
     const componentProps = resolveProps(global, local, element.props, actions);
 
+    const animatedProps = {...componentProps}
+    animatedProps.style = {...(animatedProps.style) || {}}
+
+    const initialOpacity = animatedProps.style?.opacity ?? 1;
+    animatedProps.style.opacity = isVisible ? initialOpacity : 0;
+    animatedProps.style.transform = isVisible ? 'translateY(0)' : `translateY(${10}px)`;
+    animatedProps.style.transition = `opacity ${200}ms ease-out, transform ${200}ms ease-out`;
+    animatedProps.style.willChange = 'opacity, transform';
+
     const contentNode = renderContent(global, local, element.content);
     const childNodes = childrenMap[element.id]?.map((childId: string, index: number) => {
         return <Renderer
@@ -130,10 +146,10 @@ export function Renderer(props: RendererProps) {
     const nodesToRender = [contentNode, ...childNodes].filter(node => node !== null && node !== undefined) // 0 is falsy
 
     if (nodesToRender.length > 0) {
-        return <Component {...componentProps}>
+        return <Component {...animatedProps}>
             {nodesToRender}
         </Component>
     }
 
-    return <Component {...componentProps} />
+    return <Component {...animatedProps}/>
 }

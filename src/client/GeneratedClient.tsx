@@ -2,7 +2,7 @@
 
 import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
 import React, { JSX, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { ContextfulAction } from 'src/types';
+import { AnimateOptions, ContextfulAction } from 'src/types';
 import { ResponseParser } from '../ResponseParser';
 import { Renderer } from './Renderer';
 import { SyntuxContext } from './SyntuxContext';
@@ -16,14 +16,16 @@ export function GeneratedClient({
   inputStream,
   placeholder,
   actions,
-  errorFallback
+  errorFallback,
+  animate
 }: {
   value: any,
   allowedComponents: Record<string, React.ComponentType<any> | string>,
   inputStream: StreamableValue<string>,
   placeholder?: JSX.Element,
   actions?: Record<string, ContextfulAction>,
-  errorFallback?: JSX.Element
+  errorFallback?: JSX.Element,
+  animate?: AnimateOptions
 }) {
   const [statefulValue, setStatefulValue] = useState(value); // stateful because changeable through context
   const [, forceUpdate] = useReducer(x => x + 1, 0);

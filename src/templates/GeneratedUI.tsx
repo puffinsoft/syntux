@@ -4,7 +4,7 @@ import { createStreamableValue } from '@ai-sdk/rsc';
 import { LanguageModel, streamText } from 'ai';
 
 import { GeneratedClient, Renderer } from 'getsyntux/client';
-import { ContextfulAction, ResponseParser, SyntuxComponent, UISchema, constructInput, generateComponentMap } from "getsyntux";
+import { AnimateOptions, ContextfulAction, ResponseParser, SyntuxComponent, UISchema, constructInput, generateComponentMap } from "getsyntux";
 
 import spec from './spec';
 
@@ -26,6 +26,7 @@ export interface GeneratedContentProps {
 
   onError?: (arg0: any) => void;
   errorFallback?: JSX.Element;
+  animate?: AnimateOptions
 }
 
 /**
@@ -45,7 +46,7 @@ export interface GeneratedContentProps {
 export async function GeneratedUI(props: GeneratedContentProps) {
   const input = constructInput(props);
 
-  const { value, model, components, placeholder, cached, onGenerate, actions, onError, errorFallback } = props;
+  const { value, model, components, placeholder, cached, onGenerate, actions, onError, errorFallback, animate } = props;
 
   const allowedComponents = generateComponentMap(components || []);
 
@@ -59,7 +60,7 @@ export async function GeneratedUI(props: GeneratedContentProps) {
 
     if (schema.root) {
       return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap}
-        allowedComponents={allowedComponents} global={value} local={value} actions={actions || {}} />
+        allowedComponents={allowedComponents} global={value} local={value} actions={actions || {}} animate={animate} />
     } else {
       return <></>;
     }
@@ -100,5 +101,5 @@ export async function GeneratedUI(props: GeneratedContentProps) {
     if (onGenerate) onGenerate(total);
   })()
 
-  return <GeneratedClient value={value} allowedComponents={allowedComponents} inputStream={stream.value} placeholder={placeholder} actions={actions} errorFallback={errorFallback} />
+  return <GeneratedClient value={value} allowedComponents={allowedComponents} inputStream={stream.value} placeholder={placeholder} actions={actions} errorFallback={errorFallback} animate={animate} />
 }

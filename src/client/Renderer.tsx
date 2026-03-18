@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentType, Fragment, useEffect, useState } from 'react'
-import { ChildrenMap, ComponentMap, ContextfulAction, SchemaNode } from '../types';
+import { AnimateOptions, ChildrenMap, ComponentMap, ContextfulAction, SchemaNode } from '../types';
 
 /**
  * lightweight implementation of lodash.get
@@ -91,6 +91,7 @@ export interface RendererProps {
     global: any;
     local: any;
     actions: Record<string, ContextfulAction>;
+    animate?: AnimateOptions;
 }
 
 /**
@@ -105,7 +106,7 @@ export function Renderer(props: RendererProps) {
     }, [])
 
     const {
-        id, componentMap, childrenMap, global, local, allowedComponents, actions
+        id, componentMap, childrenMap, global, local, allowedComponents, actions, animate
     } = props;
     const element = componentMap[id];
 
@@ -130,8 +131,8 @@ export function Renderer(props: RendererProps) {
 
     const initialOpacity = animatedProps.style?.opacity ?? 1;
     animatedProps.style.opacity = isVisible ? initialOpacity : 0;
-    animatedProps.style.transform = isVisible ? 'translateY(0)' : `translateY(${10}px)`;
-    animatedProps.style.transition = `opacity ${200}ms ease-out, transform ${200}ms ease-out`;
+    animatedProps.style.transform = isVisible ? 'translateY(0)' : `translateY(${animate?.offset ?? 10}px)`;
+    animatedProps.style.transition = `opacity ${animate?.duration ?? 200}ms ease-out, transform ${animate?.duration ?? 200}ms ease-out`;
     animatedProps.style.willChange = 'opacity, transform';
 
     const contentNode = renderContent(global, local, element.content);

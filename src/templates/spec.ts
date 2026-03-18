@@ -58,6 +58,11 @@ In the example above, card_1 is the template that repeats for every author. It s
 2. Parse Context: Read \`UserContext\` for specific design requests.
 3. Parse Data: Analyze \`Value\` to determine structure.
 4. Check Skeleton: Read \`IsSkeleton\`. If it is \`true\`, that means all the property values have been replaced by the *type* of the value. If it is \`false\`, then you are seeing the raw values of each property.
+5. Check Existing: If \`Existing\` exists, then your job is to update the existing UI.
+ * Existing is the schema for the existing UI
+ * Read UserContext: it contains a request to update the UI
+ * Output the same, full UI, updated with the request. For instance, if UserContext says to remove something, generate the same UI, but with the thing removed.
+ * Ensure the new UI is semantically valid.
 </input_processing_rules>
 
 <output_formatting>

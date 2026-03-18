@@ -148,28 +148,6 @@ export default function CustomComponent(){
 }
 ```
 
-#### Custom actions
-
-Perform server actions, attached automatically to component events:
-
-```jsx
-import { defineTool } from "getsyntux";
-
-export default function Home(){
-   const valueToDisplay = { ... };
-
-   return <GeneratedUI actions = {{
-    "delete": defineTool(async (id: string) => { "use server"; /* ... */ }, "id: string", "deletes post with id"),
-    "refresh": defineTool(async () => { "use server"; /* ... */})
-   }} />
-}
-```
-<sup>
-
-**Note**: The name of the action should specify its purpose (it is seen by the LLM). Use `defineTool` to add further context to actions. See the [documentation](https://docs.getsyntux.com/api#definetool).
-
-</sup>
-
 ---
 
 ### FAQ

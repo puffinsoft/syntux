@@ -25,12 +25,6 @@ export type SyntuxComponent = {
     context?: string;
 }
 
-export type ContextfulAction = {
-    fn: Function,
-    params: string,
-    context: string
-}
-
 export type AnimateOptions = {
     offset: number, // default 10
     duration: number // default 200

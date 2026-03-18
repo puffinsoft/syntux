@@ -2,7 +2,7 @@
 
 import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
 import React, { JSX, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { AnimateOptions, ContextfulAction } from 'src/types';
+import { AnimateOptions } from 'src/types';
 import { ResponseParser } from '../ResponseParser';
 import { Renderer } from './Renderer';
 import { SyntuxContext } from './SyntuxContext';
@@ -15,7 +15,6 @@ export function GeneratedClient({
   allowedComponents,
   inputStream,
   placeholder,
-  actions,
   errorFallback,
   animate
 }: {
@@ -23,7 +22,6 @@ export function GeneratedClient({
   allowedComponents: Record<string, React.ComponentType<any> | string>,
   inputStream: StreamableValue<string>,
   placeholder?: JSX.Element,
-  actions?: Record<string, ContextfulAction>,
   errorFallback?: JSX.Element,
   animate?: AnimateOptions
 }) {
@@ -62,7 +60,7 @@ export function GeneratedClient({
     if(errored && errorFallback) return <>{errorFallback}</>
 
     if(schema?.root){
-      return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} actions={actions || {}} /> 
+      return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} /> 
     } else {
       return <>{placeholder}</>
     }

@@ -1,7 +1,7 @@
 "use client";
 
-import { ComponentType, Fragment, useEffect, useState } from 'react'
-import { AnimateOptions, ChildrenMap, ComponentMap, ContextfulAction, SchemaNode } from '../types';
+import { ComponentType, Fragment, useEffect, useState } from 'react';
+import { AnimateOptions, ChildrenMap, ComponentMap } from '../types';
 
 /**
  * lightweight implementation of lodash.get
@@ -29,24 +29,8 @@ const blacklistedProps = new Set(["dangerouslySetInnerHTML"])
 /**
  * recursively parses props for bindings, replacing with true values
  */
-const resolveProps = (global: any, local: any, props: any, actions: Record<string, ContextfulAction>) => {
+const resolveProps = (global: any, local: any, props: any) => {
     if (!props) return props;
-    if ("$action" in props) {
-        const action = actions[props.$action];
-        if (!action) return () => { };
-
-        const resolvedArgs = props.args.map((arg: any) => {
-            if (arg && typeof arg === "object" && "$bind" in arg) {
-                return get(global, local, arg.$bind);
-            } else {
-                return arg;
-            }
-        })
-
-        return (e: any) => {
-            action.fn(...resolvedArgs)
-        }
-    }
 
     if ("$bind" in props) { // $bind may be falsy value
         const resolved = get(global, local, props.$bind);
@@ -66,7 +50,7 @@ const resolveProps = (global: any, local: any, props: any, actions: Record<strin
 
         const val = props[key];
         if (typeof val === "object") {
-            props[key] = resolveProps(global, local, val, actions);
+            props[key] = resolveProps(global, local, val);
         }
     })
     return props;
@@ -90,7 +74,6 @@ export interface RendererProps {
     allowedComponents: Record<string, ComponentType<any> | string>;
     global: any;
     local: any;
-    actions: Record<string, ContextfulAction>;
     animate?: AnimateOptions;
 }
 
@@ -106,7 +89,7 @@ export function Renderer(props: RendererProps) {
     }, [])
 
     const {
-        id, componentMap, childrenMap, global, local, allowedComponents, actions, animate
+        id, componentMap, childrenMap, global, local, allowedComponents, animate
     } = props;
     const element = componentMap[id];
 
@@ -124,7 +107,7 @@ export function Renderer(props: RendererProps) {
     }
 
     const Component = allowedComponents[element.type] || element.type;
-    const componentProps = resolveProps(global, local, element.props, actions);
+    const componentProps = resolveProps(global, local, element.props);
 
     const animatedProps = {...componentProps}
     animatedProps.style = {...(animatedProps.style) || {}}

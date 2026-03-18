@@ -1,5 +1,5 @@
 import { GeneratedContentProps } from "./templates/GeneratedUI";
-import { ContextfulAction, SyntuxComponent } from "./types";
+import { SyntuxComponent } from "./types";
 
 /**
  * Converts a list of components into a dictionary for fast-retrieval
@@ -21,7 +21,7 @@ export function generateComponentMap(allowedComponents: (SyntuxComponent | strin
  * Creates LLM input in accordance to the spec
  */
 export function constructInput({
-    value, skeletonize = false, components, hint, actions
+    value, skeletonize = false, components, hint
 }: GeneratedContentProps) {
     const allowedComponents = components?.map((item: SyntuxComponent | string) => {
         if (typeof item === "string") return item;
@@ -39,17 +39,9 @@ export function constructInput({
 
     const userContext = hint;
 
-    let availableActions = "";
-    if(actions){
-        availableActions = "\n" + Object.keys(actions).map((key: string) => {
-            const action: ContextfulAction = actions[key];
-            return `- ${key}(${action.params}): ${action.context}`
-        }).join('\n') + "\n"
-    }
-
     const inputValue = JSON.stringify(skeletonize ? createSkeleton(value) : value)
 
-    return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${userContext || ""}</UserContext>\n<AvailableActions>${availableActions}</AvailableActions>\n<IsSkeleton>${skeletonize.toString()}</IsSkeleton>\n<Value>\n${inputValue}\n</Value>`
+    return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${userContext || ""}</UserContext>\n<IsSkeleton>${skeletonize.toString()}</IsSkeleton>\n<Value>\n${inputValue}\n</Value>`
 }
 
 /**
@@ -74,18 +66,4 @@ export function createSkeleton(input: any) {
         acc[key] = createSkeleton(value);
         return acc;
     }, {})
-}
-
-/**
- * attaches metadata to callback to allow LLM understanding
- * @param fn the action to be binded to an event on the UI
- * @param params the parameters the function accepts, in Typescript format (e.g., "id: number, name: string")
- * @param context a description of what the function does, for better LLM context
- */
-export function defineTool(fn: Function, params?: string, context?: string): ContextfulAction {
-    return {
-        fn, 
-        params: params || "",
-        context: context || "no context provided"
-    }
 }

@@ -5,7 +5,8 @@ import { SchemaNode, UISchema } from "./types";
  */
 export class ResponseParser {
     buffer = ""; // unflushed existing deltas w/o newline
-    
+    total = ""; // accumulator
+
     // schema assembled thus far
     schema: UISchema = {
         childrenMap: {},
@@ -22,6 +23,7 @@ export class ResponseParser {
      * @returns true if update is warranted, false otherwise.
      */
     addDelta(delta: string) {
+        this.total += delta;
         this.buffer += delta;
         const split = this.buffer.split("\n")
         if (split.length > 1) {

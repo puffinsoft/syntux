@@ -60,7 +60,7 @@ export function GeneratedClient({
     if(errored && errorFallback) return <>{errorFallback}</>
 
     if(schema?.root){
-      return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} /> 
+      return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} animate={animate} /> 
     } else {
       return <>{placeholder}</>
     }

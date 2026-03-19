@@ -91,7 +91,7 @@ export function GeneratedClient({
     }
   }
 
-  const modifyValue = async (value: any, options: RerenderOptions) => {
+  const modifyValue = async (value: any, options: RerenderOptions): Promise<null> | null  => {
     if (!options.regenerate) {
       setStatefulValue(value);
     } else {
@@ -99,8 +99,11 @@ export function GeneratedClient({
         throw new Error("No rerender server action provided. Use the 'rerender' prop.")
       } else {
         if (parser.current) {
-          const { value } = await rerender.action(rerender.context, parser.current.total, options.hint);
-          setStatefulInputStream(value);
+          return new Promise(async (resolve) => {
+            const { value } = await rerender.action(rerender.context, parser.current.total, options.hint);
+            setStatefulInputStream(value);
+            resolve(null);
+          })
         }
       }
     }

@@ -1,9 +1,9 @@
 import { JSX } from 'react';
 
-import { createStreamableValue } from '@ai-sdk/rsc';
+import { createStreamableValue, StreamableValue } from '@ai-sdk/rsc';
 import { LanguageModel, streamText } from 'ai';
 
-import { AnimateOptions, ResponseParser, SyntuxComponent, UISchema, constructInput, generateComponentMap } from "getsyntux";
+import { AnimateOptions, constructInput, generateComponentMap, ResponseParser, SyntuxComponent, UISchema } from "getsyntux";
 import { GeneratedClient, Renderer } from 'getsyntux/client';
 
 import spec from './spec';
@@ -26,6 +26,8 @@ export interface GeneratedContentProps {
   onError?: (arg0: any) => void;
   errorFallback?: JSX.Element;
   animate?: AnimateOptions
+  
+  rerender?: (arg0: string, arg1: string, arg2: string) => Promise<{ value: StreamableValue }>
 }
 
 /**
@@ -37,67 +39,54 @@ export interface GeneratedContentProps {
  * @param placeholder A placeholder to show while awaiting streaming (NOT during streaming)
  * @param cached Schema returned from onGenerate, used for caching UI
  * @param onGenerate Callback which accepts a string, to be passed to `cached` to reuse same UI
- * @param skeletonize Compresses value for large inputs (arrays) or untrusted input
- * @param onError Callback which accepts an error, invoked when necessary. If not provided, runtime error occurs.
- * @param errorFallback An element fallback to show if an error occurs during generation.
 */
 export async function GeneratedUI(props: GeneratedContentProps) {
   const input = constructInput(props);
+  const rerenderContext = input.split('\n').slice(0, 2);
 
-  const { value, model, components, placeholder, cached, onGenerate, onError, errorFallback, animate } = props;
-
+  const { value, model, components, placeholder, cached, onGenerate, rerender } = props;
+  
   const allowedComponents = generateComponentMap(components || []);
 
   // prerender if cached
-  if (cached) {
+  if(cached){
     const parser = new ResponseParser();
     parser.addDelta(cached);
     parser.finish();
 
     const schema: UISchema = parser.schema;
 
-    if (schema.root) {
+    if(schema.root){
       return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap}
-        allowedComponents={allowedComponents} global={value} local={value} animate={animate} />
+        allowedComponents={allowedComponents} global={value} local={value} />
     } else {
       return <></>;
     }
   }
 
   const stream = createStreamableValue('');
+
   (async () => {
     let total = "";
-    let errored = false;
 
     const { textStream } = await streamText({
       model,
       system: spec,
-      prompt: input,
-      onError: (err) => {
-        stream.error(err)
-        errored = true;
-
-        if (!onError) {
-          if (!errorFallback) {
-            throw err;
-          }
-        } else {
-          onError(err)
-        }
-      }
+      prompt: input
     })
 
-    for await (const delta of textStream) {
+    for await(const delta of textStream){
       stream.update(delta);
       total += delta;
     }
 
-    if (!errored) {
-      stream.done();
-    }
+    stream.done();
 
-    if (onGenerate) onGenerate(total);
+    if(onGenerate) onGenerate(total);
   })()
 
-  return <GeneratedClient value={value} allowedComponents={allowedComponents} inputStream={stream.value} placeholder={placeholder} errorFallback={errorFallback} animate={animate} />
+  return <GeneratedClient value={value} allowedComponents={allowedComponents} inputStream={stream.value} placeholder={placeholder} rerender={{
+    context: rerenderContext.join('\n'),
+    action: rerender
+  }} />
 }

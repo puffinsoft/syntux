@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
+import { RerenderOptions } from "src/types";
 
 export type SyntuxContextType = {
     value: any,
-    setValue: (arg0: any) => void
+    setValue: (value: any, options: RerenderOptions) => void
 }
 
 export const SyntuxContext = createContext<SyntuxContextType | null>(null)

@@ -78,6 +78,17 @@ Input:
 Output:
 { ... }
 ... more lines
+
+Or for an existing UI:
+
+<AllowedComponents>...</AllowedComponents>
+<ComponentContext>...</ComponentContext>
+<UserContext>...</UserContext>
+<Existing>...</Existing>
+
+Output:
+{ ... }
+ ... more lines
 </output_formatting>
 
 <reasoning_requirements>

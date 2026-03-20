@@ -3,7 +3,7 @@ import { RerenderOptions } from "src/types";
 
 export type SyntuxContextType = {
     value: any,
-    setValue: (value: any, options: RerenderOptions) => Promise<null> | null
+    setValue: (value: any, options?: RerenderOptions) => Promise<null> | null
 }
 
 export const SyntuxContext = createContext<SyntuxContextType | null>(null)

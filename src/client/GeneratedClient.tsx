@@ -91,8 +91,8 @@ export function GeneratedClient({
     }
   }
 
-  const modifyValue = async (value: any, options: RerenderOptions): Promise<null> | null  => {
-    if (!options.regenerate) {
+  const modifyValue = async (value: any, options?: RerenderOptions): Promise<null> | null  => {
+    if (!options || !options.regenerate) {
       setStatefulValue(value);
     } else {
       if (!rerender.action) {

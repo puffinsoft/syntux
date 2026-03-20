@@ -99,6 +99,7 @@ Output:
 
 <IMPORTANT>
 Do NOT output anything EXCEPT the list of JSON.
+Do NOT add event listeners.
 </IMPORTANT>`;
 
 export default spec;

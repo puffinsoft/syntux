@@ -1,5 +1,11 @@
 "use server";
 
+/**
+ * this file is optional!
+ * you can delete it if you do not need rerender functionality.
+ * 
+ * run "npm i @ai-sdk/anthropic" if you want to use Claude.
+ */
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createStreamableValue } from "@ai-sdk/rsc";
 import { streamText } from "ai";

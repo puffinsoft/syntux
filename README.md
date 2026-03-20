@@ -220,6 +220,25 @@ export default function CustomComponent() {
 
 The new user interface will be streamed.
 
+#### Customize animation
+
+By default, new elements fade in from below when mounted.
+
+This motion cannot yet be customized. However, the duration and offset can, using the `animate` property:
+
+```jsx
+<GeneratedUI
+    model={anthropic("claude-sonnet-4-5")}
+    value={valueToDisplay}
+    animate={{
+        offset: 10, // pixels
+        duration: 100 // ms
+    }}
+/>
+```
+
+In order to disable the animation, set `offset` to 0 or `duration` to 0.
+
 ---
 
 ### FAQ

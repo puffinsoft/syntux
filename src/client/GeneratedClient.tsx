@@ -99,6 +99,7 @@ export function GeneratedClient({
         throw new Error("No rerender server action provided. Use the 'rerender' prop.")
       } else {
         if (parser.current) {
+          setStatefulValue(value);
           return new Promise(async (resolve) => {
             const { value } = await rerender.action(rerender.context, parser.current.total, options.hint);
             setStatefulInputStream(value);

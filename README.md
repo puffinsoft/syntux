@@ -21,6 +21,7 @@ For instance, if you provide an array `value` with 10,000 items, it will cost yo
 - ⚡ **Streamable** - display UI as you generate.
 - 🎨 **Custom Components** - use your own React components.
 - 💾 **Cacheable** - reuse generated UIs with new values.
+- 🔄 **Reactive** - update the UI programmatically.
 
 **How does it work?** *syntux* generates a JSON-DSL to represent the UI, known as the React Interface Schema. The specifics are in the FAQ [below](#faq).
 
@@ -96,13 +97,23 @@ export default function Home(){
 Cache generated UI based on a user ID:
 
 ```jsx
-const cache: Map<number, string> = new Map();
-export default function Home(){
-    const userID = 10;
-    const valueToDisplay = { ... };
-    return <GeneratedUI cached={cache.get(userID)} onGenerate={(result) => {
-        cache.set(userID, result)
-    }} model={anthropic("claude-sonnet-4-5")} value={valueToDisplay} />
+const cache: Map<number, string> = new Map(); // user id → UI schema
+
+export default function Home() {
+  const userID = 10;
+  const valueToDisplay = { ... };
+
+  return (
+    <GeneratedUI
+      cached={cache.get(userID)}
+      onGenerate={(result) => {
+        cache.set(userID, result);
+      }}
+
+      model={anthropic("claude-sonnet-4-5")}
+      value={valueToDisplay}
+    />
+  );
 }
 ```
 
@@ -111,14 +122,28 @@ export default function Home(){
 Use your own components, or someone else's (a library):
 
 ```jsx
-import { CustomOne, CustomTwo } from '@/my_components'
-export default function Home(){
-   const valueToDisplay = { ... };
+import { CustomOne, CustomTwo } from "@/my_components";
 
-   return <GeneratedUI components={[
-    { name: 'Button', props: "{ color: string, text: string }", component: CustomOne },
-    { name: 'Input', props: "{ initial: string, disabled: boolean }", component: CustomTwo, context: "Creates an input field with an (initial) value. Can be disabled." }
-   ]} />
+export default function Home() {
+  const valueToDisplay = { ... };
+
+  return (
+    <GeneratedUI
+      components={[{
+          name: "Button",
+          props: "{ color: string, text: string }",
+          component: CustomOne,
+        }, {
+          name: "Input",
+          props: "{ initial: string, disabled: boolean }",
+          component: CustomTwo,
+          context: "Creates an input field with an (initial) value. Can be disabled.",
+        }]}
+
+        model={anthropic("claude-sonnet-4-5")}
+        value={valueToDisplay}
+    />
+  );
 }
 ```
 
@@ -130,23 +155,70 @@ export default function Home(){
 
 Make sure components are marked with `"use client"`.
 
-#### Update value (interactivity)
+#### Update value (static)
 
 Use the `useSyntux` hook to retrieve and update the `value` inside a custom component:
 
 ```jsx
 "use client";
 
-export default function CustomComponent(){
-    const { value, setValue } = useSyntux();
+export default function CustomComponent() {
+  const { value, setValue } = useSyntux();
 
-    return <button onClick={() => {
+  return (
+    <button
+      onClick={() => {
         const newArr = [...value];
         newArr.push({ ... });
         setValue(newArr);
-    }}>Add value</button>
+      }}
+    >
+      Add value
+    </button>
+  );
 }
 ```
+
+#### Regenerate UI (dynamic)
+
+Provide the `rerender` prop a server action.
+
+**The server action is already provided.** However, you will need to configure it (i.e., add an API key etc,.)
+
+```jsx
+import { rerenderAction } from "@/lib/getsyntux/RerenderHandler"; // preinstalled
+
+<GeneratedUI 
+    model={anthropic("claude-sonnet-4-5")}
+    value={valueToDisplay}
+    rerender={rerenderAction}
+/>
+```
+
+Inside a custom component, use the `useSyntux` hook and provide a hint to regenerate the UI:
+
+```jsx
+"use client";
+
+export default function CustomComponent() {
+  const { value, setValue } = useSyntux();
+
+  return (
+    <button
+      onClick={() => {
+        setValue(value, {
+            regenerate: true, // if false, treated as static
+            hint: "Change the style to be more..."
+        })
+      }}
+    >
+      Update UI!
+    </button>
+  );
+}
+```
+
+The new user interface will be streamed.
 
 ---
 

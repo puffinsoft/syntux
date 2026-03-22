@@ -29,6 +29,19 @@ For instance, if you provide an array `value` with 10,000 items, it will cost yo
 
 ---
 
+### Table of Contents
+
+- [API](#api)
+- [Installation](#installation)
+- [Examples](#examples)
+  - [Basic Example](#basic-example)
+  - [Caching](#caching)
+  - [Custom components](#custom-components)
+  - [Regenerate UI (reactivity)](#regenerate-ui-reactivity)
+  - [Customize animation](#customize-animation)
+
+---
+
 ### API
 
 <i>syntux</i> is built for React and Next.js.
@@ -155,70 +168,11 @@ export default function Home() {
 
 Make sure components are marked with `"use client"`.
 
-#### Update value (static)
+#### Regenerate UI (reactivity)
 
-Use the `useSyntux` hook to retrieve and update the `value` inside a custom component:
+The `useSyntux` hook allows you to modify the user interface after it has been generated.
 
-```jsx
-"use client";
-
-export default function CustomComponent() {
-  const { value, setValue } = useSyntux();
-
-  return (
-    <button
-      onClick={() => {
-        const newArr = [...value];
-        newArr.push({ ... });
-        setValue(newArr);
-      }}
-    >
-      Add value
-    </button>
-  );
-}
-```
-
-#### Regenerate UI (dynamic)
-
-Provide the `rerender` prop a server action.
-
-**The server action is already provided.** However, you will need to configure it (i.e., add an API key etc,.)
-
-```jsx
-import { rerenderAction } from "@/lib/getsyntux/RerenderHandler"; // preinstalled
-
-<GeneratedUI 
-    model={anthropic("claude-sonnet-4-5")}
-    value={valueToDisplay}
-    rerender={rerenderAction}
-/>
-```
-
-Inside a custom component, use the `useSyntux` hook and provide a hint to regenerate the UI:
-
-```jsx
-"use client";
-
-export default function CustomComponent() {
-  const { value, setValue } = useSyntux();
-
-  return (
-    <button
-      onClick={() => {
-        setValue(value, {
-            regenerate: true, // if false, treated as static
-            hint: "Change the style to be more..."
-        })
-      }}
-    >
-      Update UI!
-    </button>
-  );
-}
-```
-
-The new user interface will be streamed.
+See [documentation#reactivity](https://docs.getsyntux.com/reactivity). It's extremely simple.
 
 #### Customize animation
 

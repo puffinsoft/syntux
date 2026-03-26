@@ -12,10 +12,6 @@ You give it a <code>value</code> and it designs the UI to display it.
 
 https://github.com/user-attachments/assets/c85de55d-21f3-43ff-8bd3-d6ede2171447
 
-*syntux* is designed to **display data**. Do not let this fact intimidate you - that is simply a testament to how token-efficient it is.
-
-For instance, if you provide an array `value` with 10,000 items, it will cost you the same as one with 10 items. **That is how efficient syntux is**. 
-
 ### Features
 
 - ⚡ **Streamable** - display UI as you generate.

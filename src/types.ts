@@ -1,5 +1,3 @@
-import { StreamableValue } from "@ai-sdk/rsc";
-
 /* llm side */
 
 export type SchemaNode = {
@@ -20,11 +18,19 @@ export type UISchema = {
 }
 
 /* dev side */
-export type SyntuxComponent = {
+
+/**
+ * for providing context on custom components
+ * used for AllowedComponents and ComponentContext
+ */
+export type ComponentMetadata = {
     name: string;
     props: string;
-    component: React.ComponentType<any>;
     context?: string;
+}
+
+export type SyntuxComponent = ComponentMetadata & {
+    component: React.ComponentType<any>;
 }
 
 export type AnimateOptions = {
@@ -44,6 +50,6 @@ export type RerenderOptions = {
 
 // provides necessary info to rerender properly
 export type RerenderContext = {
-  context: string,
-  action?: (arg0: string, arg1: string, arg2: string) => Promise<{ value: StreamableValue }>
+    context: string,
+    endpoint?: string
 }

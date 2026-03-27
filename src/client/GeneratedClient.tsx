@@ -1,123 +1,147 @@
 "use client";
 
-import { StreamableValue, readStreamableValue } from '@ai-sdk/rsc';
-import React, { JSX, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { AnimateOptions, RerenderContext, RerenderOptions } from 'src/types';
-import { ResponseParser } from 'src/ResponseParser';
+import React, { JSX, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { AnimateOptions, RerenderContext, RerenderOptions } from '../types';
+import { ResponseParser } from '../ResponseParser';
 import { Renderer } from './Renderer';
 import { SyntuxContext } from './SyntuxContext';
 
-
+// stateful, see below
+type FetchConfig = {
+    url: string;
+    body: object;
+};
 
 /**
- * Client wrapper for Renderer that handles streaming and parsing with server.
+ * Internal client component that handles streaming, parsing, and rendering.
+ * For most use cases, use GeneratedUI instead.
  */
 export function GeneratedClient({
-  value,
-  allowedComponents,
-  inputStream,
-  placeholder,
-  errorFallback,
-  animate,
-  rerender
+    value,
+    allowedComponents,
+    endpoint,
+    fetchBody,
+    placeholder,
+    errorFallback,
+    animate,
+    onGenerate,
+    rerender,
 }: {
-  value: any,
-  allowedComponents: Record<string, React.ComponentType<any> | string>,
-  inputStream: StreamableValue<string>,
-  placeholder?: JSX.Element,
-  errorFallback?: JSX.Element,
-  animate?: AnimateOptions,
-  rerender: RerenderContext
+    value: any;
+    allowedComponents: Record<string, React.ComponentType<any> | string>;
+    endpoint: string;
+    fetchBody: object;
+    placeholder?: JSX.Element;
+    errorFallback?: JSX.Element;
+    animate?: AnimateOptions;
+    onGenerate?: (schema: string) => void;
+    rerender: RerenderContext;
 }) {
-  const [statefulValue, setStatefulValue] = useState(value); // stateful because changeable through context
-  const [statefulInputStream, setStatefulInputStream] = useState(inputStream);
+    const [statefulValue, setStatefulValue] = useState(value);
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const parser = useRef<ResponseParser | null>(null);
+    const [errored, setErrored] = useState(false);
 
-  const [, forceUpdate] = useReducer(x => x + 1, 0);
-  const parser = useRef<ResponseParser | null>(null);
-  const [errored, setErrored] = useState(false)
-
-  // HMR support
-  useEffect(() => {
-    setStatefulInputStream(inputStream)
-  }, [inputStream])
-
-  useEffect(() => {
     /**
-     * flag to avoid conflicting streams from mutating UI.
+     * single source of truth for useEffect rerenders.
+     * body is intentionally vague, stringified very casually later.
      */
-    let isActive = true;
+    const [fetchConfig, setFetchConfig] = useState<FetchConfig>(() => ({ url: endpoint, body: fetchBody }));
 
-    // forcibly create a new one for HMR
-    parser.current = new ResponseParser();
+    useEffect(() => {
+        /**
+        * flag to avoid conflicting streams from mutating UI.
+        */
+        let isActive = true;
+        parser.current = new ResponseParser();
+        setErrored(false);
 
-    const parseStream = async () => {
-      try {
-        for await (const delta of readStreamableValue(statefulInputStream)) {
-          if (!isActive) break;
+        const initiateStream = async () => {
+            try {
+                const response = await fetch(fetchConfig.url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(fetchConfig.body),
+                });
 
-          if (parser.current && delta !== undefined) {
-            if (parser.current.addDelta(delta)) {
-              forceUpdate();
+                if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (!isActive) break;
+                    if (done) break;
+
+                    const delta = decoder.decode(value);
+
+                    if(parser.current && delta !== undefined){
+                        if(parser.current.addDelta(delta)){
+                            forceUpdate();
+                        }
+                    }
+                }
+
+                if (isActive) {
+                    parser.current?.finish();
+                    forceUpdate();
+                    onGenerate?.(parser.current?.total ?? '');
+                }
+            } catch (err) {
+                if (isActive) setErrored(true);
             }
-          }
-        }
+        };
 
-        if (isActive) {
-          parser.current?.finish();
-          forceUpdate();
+        initiateStream();
+        return () => { isActive = false; };
+    }, [fetchConfig]);
+
+    const schema = parser.current?.schema;
+
+    const modifyValue = useCallback((value: any, options?: RerenderOptions) => {
+        if (!options || !options.regenerate) {
+            setStatefulValue(value);
+        } else {
+            if (!rerender.endpoint) {
+                throw new Error("No rerenderEndpoint provided. Pass rerenderEndpoint to <GeneratedUI>.");
+            }
+            setStatefulValue(value);
+            setFetchConfig({
+                url: rerender.endpoint,
+                body: {
+                    context: rerender.context,
+                    existing: parser.current?.total ?? '',
+                    hint: options.hint,
+                },
+            });
         }
-      } catch (err) {
-        if (isActive) setErrored(true);
-      }
+    }, [rerender.endpoint, rerender.context]);
+
+    const providerValue = useMemo(() => ({
+        value: statefulValue,
+        setValue: modifyValue,
+    }), [statefulValue, modifyValue]);
+
+    const renderContent = () => {
+        if (errored && errorFallback) return <>{errorFallback}</>;
+        if (schema?.root) {
+            return <Renderer
+                id={schema.root.id}
+                componentMap={schema.componentMap}
+                childrenMap={schema.childrenMap}
+                allowedComponents={allowedComponents}
+                global={statefulValue}
+                local={statefulValue}
+                animate={animate}
+            />;
+        }
+        return <>{placeholder}</>;
     };
 
-    parseStream();
-
-    return () => {
-      isActive = false;
-    }
-  }, [statefulInputStream]);
-
-  const schema = parser?.current?.schema;
-
-
-  const renderContent = () => {
-    if (errored && errorFallback) return <>{errorFallback}</>
-
-    if (schema?.root) {
-      return <Renderer id={schema.root.id} componentMap={schema.componentMap} childrenMap={schema.childrenMap} allowedComponents={allowedComponents} global={statefulValue} local={statefulValue} animate={animate} />
-    } else {
-      return <>{placeholder}</>
-    }
-  }
-
-  const modifyValue = async (value: any, options?: RerenderOptions): Promise<null> | null  => {
-    if (!options || !options.regenerate) {
-      setStatefulValue(value);
-    } else {
-      if (!rerender.action) {
-        throw new Error("No rerender server action provided. Use the 'rerender' prop.")
-      } else {
-        if (parser.current) {
-          setStatefulValue(value);
-          return new Promise(async (resolve) => {
-            const { value } = await rerender.action(rerender.context, parser.current.total, options.hint);
-            setStatefulInputStream(value);
-            resolve(null);
-          })
-        }
-      }
-    }
-  }
-
-  const providerValue = useMemo(() => ({
-    value: statefulValue, setValue: modifyValue
-  }), [statefulValue]);
-  return (
-    <>
-      <SyntuxContext.Provider value={providerValue}>
-        {renderContent()}
-      </SyntuxContext.Provider >
-    </>
-  )
+    return (
+        <SyntuxContext.Provider value={providerValue}>
+            {renderContent()}
+        </SyntuxContext.Provider>
+    );
 }

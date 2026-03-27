@@ -26,6 +26,13 @@ const get = (global: any, local: any, path: string) => {
 
 
 const blacklistedProps = new Set(["dangerouslySetInnerHTML"])
+
+/**
+ * LLM hallucinations sometimes cause erroneous event handler insertion.
+ * light detection for camelCase and on[...]
+ */
+const isEventHandlerKey = (key: string) => key.length > 2 && key.startsWith('on') && key[2] === key[2].toUpperCase();
+
 /**
  * recursively parses props for bindings, replacing with true values
  */
@@ -35,7 +42,7 @@ const resolveProps = (global: any, local: any, props: any) => {
     if ("$bind" in props) { // $bind may be falsy value
         const resolved = get(global, local, props.$bind);
         Object.keys(resolved).forEach((key) => {
-            if (blacklistedProps.has(key)) {
+            if (blacklistedProps.has(key) || (isEventHandlerKey(key) && typeof resolved[key] !== 'function')) {
                 delete resolved[key];
             }
         })
@@ -51,6 +58,9 @@ const resolveProps = (global: any, local: any, props: any) => {
         const val = props[key];
         if (typeof val === "object") {
             props[key] = resolveProps(global, local, val);
+            if (isEventHandlerKey(key) && typeof props[key] !== 'function') {
+                delete props[key];
+            }
         }
     })
     return props;

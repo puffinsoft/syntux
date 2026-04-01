@@ -1,5 +1,5 @@
-import { GeneratedContentProps } from "./templates/GeneratedUI";
-import { SyntuxComponent } from "./types";
+import { GeneratedUIProps } from "./client";
+import { ComponentMetadata, SyntuxComponent } from "./types";
 
 /**
  * Converts a list of components into a dictionary for fast-retrieval
@@ -18,17 +18,22 @@ export function generateComponentMap(allowedComponents: (SyntuxComponent | strin
 }
 
 /**
- * Creates LLM input in accordance to the spec
+ * Creates LLM input in accordance to the spec.
  */
 export function constructInput({
     value, skeletonize = false, components, hint
-}: GeneratedContentProps) {
-    const allowedComponents = components?.map((item: SyntuxComponent | string) => {
+}: {
+    value: any;
+    components?: (ComponentMetadata | string)[];
+    hint?: string;
+    skeletonize?: boolean;
+}) {
+    const allowedComponents = components?.map((item: ComponentMetadata | string) => {
         if (typeof item === "string") return item;
         return item.name;
     }).join(',') || ""
 
-    const customComponents = components?.filter((item): item is SyntuxComponent => typeof item !== "string");
+    const customComponents = components?.filter((item): item is ComponentMetadata => typeof item !== "string");
     const componentContext = customComponents?.map((item) => {
         if (!item.context) {
             return `${item.name} [props: ${item.props}]`
@@ -37,17 +42,22 @@ export function constructInput({
         }
     }).join(',') || ""
 
-    const userContext = hint;
-
     const inputValue = JSON.stringify(skeletonize ? createSkeleton(value) : value)
 
-    return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${userContext || ""}</UserContext>\n<IsSkeleton>${skeletonize.toString()}</IsSkeleton>\n<Value>\n${inputValue}\n</Value>`
+    return `<AllowedComponents>${allowedComponents}</AllowedComponents>\n<ComponentContext>${componentContext}</ComponentContext>\n<UserContext>${hint || ""}</UserContext>\n<IsSkeleton>${skeletonize.toString()}</IsSkeleton>\n<Value>\n${inputValue}\n</Value>`
+}
+
+/**
+ * Builds the AllowedComponents + ComponentContext header used as context for rerender requests.
+ */
+export function constructRerenderContext(props: GeneratedUIProps) {
+    return constructInput(props).split('\n').slice(0, 2).join('\n');
 }
 
 /**
  * generates a skeleton of the input value, ideal for large arrays or untrusted input.
  * see the FAQ for more information: https://github.com/puffinsoft/syntux/wiki/FAQ#handling-untrusted-input--large-arrays.
- * 
+ *
  * *important*: assumes arrays are non-polymorphic
  */
 export function createSkeleton(input: any) {

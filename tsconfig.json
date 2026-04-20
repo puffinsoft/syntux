@@ -7,10 +7,10 @@
         "removeComments": false,
         "module": "nodenext",
         "moduleResolution": "nodenext",
-        "baseUrl": ".",
         "paths": {
             "getsyntux": ["./src/index.ts"],
             "getsyntux/client": ["./src/client.ts"],
+            "getsyntux/server": ["./src/server/index.ts"],
         }
     },
     "exclude": ["./dist/**/*"]

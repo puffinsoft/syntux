@@ -10,7 +10,7 @@ You give it a <code>value</code> and it designs the UI to display it.
 
 ---
 
-https://github.com/user-attachments/assets/c85de55d-21f3-43ff-8bd3-d6ede2171447
+![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/features.png)
 
 ### Features
 

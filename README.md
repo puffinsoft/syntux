@@ -27,22 +27,9 @@ https://github.com/user-attachments/assets/c85de55d-21f3-43ff-8bd3-d6ede2171447
 
 ---
 
-### Table of Contents
-
-- [API](#api)
-- [Installation](#installation)
-- [Examples](#examples)
-  - [Basic Example](#basic-example)
-  - [Caching](#caching)
-  - [Custom components](#custom-components)
-  - [Regenerate UI (reactivity)](#regenerate-ui-reactivity)
-  - [Customize animation](#customize-animation)
-
----
-
 ### API
 
-<i>syntux</i> is built for React and Next.js.
+<i>syntux</i> is built for React, supporting Next.js, React Router / Remix and Astro.
 
 One component is all you need:
 
@@ -54,52 +41,42 @@ const valueToDisplay = {
 }
 
 <GeneratedUI
-    model={anthropic('claude-sonnet-4-5')}
+    endpoint="/api/syntux"
     value={valueToDisplay}
     hint="UI should look like..."   
 />
 ```
 
-*syntux* takes the `value` into consideration and designs a UI to best display it. `value` can be anything; an object, array or primitive.
+*syntux* reads the `value` and designs the UI to best display it, taking the `hint` into consideration.
 
 > [!TIP]
-> If you are passing in a **large array** as a value, or an object with untrusted input, use the `skeletonize` property. See [the explanation](https://docs.getsyntux.com/advanced#skeletonize-property).
-
-### Installation
-
-In the root of your project:
-
-```
-$ npx getsyntux@latest
-```
-
-This will automatically install the required components in the `lib/getsyntux` folder.
-
-We use the [Vercel AI SDK](https://github.com/vercel/ai) to provide support for all LLM providers. To install the model providers:
-
-```
-$ npm i ai
-$ npm i @ai-sdk/anthropic (if you're using Claude)
-```
+> If you are passing in a **large array** as a value, use the `skeletonize` property. See [the explanation](https://docs.getsyntux.com/usage/advanced#skeletonize-property).
 
 ---
 
 ### Examples
+
+The following examples are meant to give you an idea of how *syntux* works.
+
+See [wiki: Installation](https://docs.getsyntux.com/installation) once you're ready to begin.
 
 #### Basic Example
 
 Generate a simple UI with a hint:
 
 ```jsx
-import { GeneratedUI } from "@/lib/getsyntux/GeneratedUI";
-import { createAnthropic } from "@ai-sdk/anthropic";
+import { GeneratedUI } from 'getsyntux/client';
 
-/* this example uses Claude, but all models are supported! */
-const anthropic = createAnthropic({ apiKey: ... })
+export default function Page() {
+  const value = { username: 'John', email: 'john@gmail.com', age: 22 };
 
-export default function Home(){
-    const valueToDisplay = { ... };
-    return <GeneratedUI model={anthropic("claude-sonnet-4-5")} value={valueToDisplay} hint="UI should look like..." />
+  return (
+    <GeneratedUI
+      endpoint="/api/syntux"
+      value={value}
+      hint="display as a profile card"
+    />
+  );
 }
 ```
 
@@ -108,21 +85,19 @@ export default function Home(){
 Cache generated UI based on a user ID:
 
 ```jsx
-const cache: Map<number, string> = new Map(); // user id → UI schema
+import { cache } from './api/syntux/route';
 
-export default function Home() {
-  const userID = 10;
-  const valueToDisplay = { ... };
+export default function Page() {
+  const userId = 10;
+  const value = { username: 'John', email: 'john@gmail.com', age: 22 };
 
   return (
     <GeneratedUI
-      cached={cache.get(userID)}
-      onGenerate={(result) => {
-        cache.set(userID, result);
-      }}
+      endpoint="/api/syntux"
+      value={value}
+      hint="UI should look like..."
 
-      model={anthropic("claude-sonnet-4-5")}
-      value={valueToDisplay}
+      cached={cache.get(userId)}
     />
   );
 }
@@ -133,26 +108,31 @@ export default function Home() {
 Use your own components, or someone else's (a library):
 
 ```jsx
-import { CustomOne, CustomTwo } from "@/my_components";
+import { GeneratedUI } from 'getsyntux/client';
+import { Card, Avatar } from '@/components/ui';
 
-export default function Home() {
-  const valueToDisplay = { ... };
+export default function Page() {
+  const value = { username: 'John', email: 'john@gmail.com', avatar: '/john.png' };
 
   return (
     <GeneratedUI
-      components={[{
-          name: "Button",
-          props: "{ color: string, text: string }",
-          component: CustomOne,
-        }, {
-          name: "Input",
-          props: "{ initial: string, disabled: boolean }",
-          component: CustomTwo,
-          context: "Creates an input field with an (initial) value. Can be disabled.",
-        }]}
+      endpoint="/api/syntux"
+      value={value}
+      hint="use custom components when possible"
 
-        model={anthropic("claude-sonnet-4-5")}
-        value={valueToDisplay}
+      components={[
+        {
+          name: 'Card',
+          props: '{ title: string, body: string }',
+          component: Card,
+        },
+        {
+          name: 'Avatar',
+          props: '{ src: string, alt: string }',
+          component: Avatar,
+          context: 'Displays a circular profile image.', /* optional */
+        },
+      ]}
     />
   );
 }
@@ -166,63 +146,75 @@ export default function Home() {
 
 Make sure components are marked with `"use client"`.
 
-#### Regenerate UI (reactivity)
+#### Reactivity
 
-The `useSyntux` hook allows you to modify the user interface after it has been generated.
-
-See [documentation#reactivity](https://docs.getsyntux.com/reactivity). It's extremely simple.
-
-#### Customize animation
-
-By default, new elements fade in from below when mounted.
-
-This motion cannot yet be customized. However, the duration and offset can, using the `animate` property:
+To regenerate the UI dynamically, in response to user action, create a separate endpoint:
 
 ```jsx
 <GeneratedUI
-    model={anthropic("claude-sonnet-4-5")}
-    value={valueToDisplay}
-    animate={{
-        offset: 10, // pixels
-        duration: 100 // ms
-    }}
+  endpoint="/api/syntux"
+  rerenderEndpoint="/api/syntux/rerender" /* <-- over here */
+
+  value={value}
+  hint="display as a profile card"
 />
 ```
 
-In order to disable the animation, set `offset` to 0 or `duration` to 0.
+Then use the `useSyntux` hook:
+
+```jsx
+"use client";
+
+export default function CustomComponent() {
+  const { value, setValue } = useSyntux();
+
+  return (
+    <button
+      onClick={() => {
+        setValue(value, {
+            regenerate: true, // if false, treated as static
+            hint: "Change the style to be more..."
+        })
+      }}
+    >
+      Update UI!
+    </button>
+  );
+}
+```
+<h3 align="center" margin="0"><a href="https://docs.getsyntux.com/">➡️ view documentation</a></h3>
+
 
 ---
 
 ### FAQ
 
 <details>
- <summary>How expensive is generation?</summary>
-
-*syntux* is highly optimized to save tokens. See [here](https://docs.getsyntux.com/advanced#cost-estimation) for a cost estimation table and an explanation.
-</details>
-
-<details>
  <summary>How does generation work? (Does it generate source code?)</summary>
 
-Generated UIs must be *secure*, *reusable* and *cacheable*.
+Generated interfaces must be *secure*, *reusable* and *cacheable*.
 
-As such, *syntux* does not generate source code. It generates a schema for the UI, known as a "React Interface Schema" (RIS). See the question below to get a better understanding.
+As such, syntux does not:
+- generate code (HTML/JSX), or...
+- hardcode the `value`
 
-This schema is tailored to the `value` that you provide. It is then hydrated by *syntux* and rendered.
+Instead, syntux generates a JSON-DSL representation of the UI, known as the React Interface Schema (RIS).
 
-![](https://raw.githubusercontent.com/puffinsoft/syntux/HEAD/docs/images/workflow.png)
+The RIS **does not hardcode values**. It **binds** to properties of the `value` and has **built-in iterators**, making it reusable and token-efficient for arrays.
+
+An example of the RIS:
+
+```json
+{"id":"loop_1", "parentId":"root", "type":"__ForEach__", "props":{"source":"authors"}}
+{"id":"card_1", "parentId":"loop_1", "type":"div", "props":{"className":"card"}, "content": {"$bind": "$item.name"}}
+```
+
 </details>
 
 <details>
- <summary>How does caching work?</summary>
+ <summary>How expensive is generation?</summary>
 
- The generated UI is determined by the React Interface Schema (see the above question).
-
- Thus, if the same schema is provided, the same UI will be generated.
-
- For simplicity, the schema is simply a string. It is up to you how you wish to store it; in memory, in a file, in a database etc,.
-
- Use the `onGenerate` and `cached` properties to retrieve/provide a cached schema respectively.
+*syntux* is highly optimized to save tokens. See [here](https://docs.getsyntux.com/usage/advanced#cost-estimation) for a cost estimation table and an explanation.
 </details>
 
 <details>

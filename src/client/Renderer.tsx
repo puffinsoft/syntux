@@ -37,33 +37,38 @@ const isEventHandlerKey = (key: string) => key.length > 2 && key.startsWith('on'
  * recursively parses props for bindings, replacing with true values
  */
 const resolveProps = (global: any, local: any, props: any) => {
-    if (!props) return props;
+    if (!props || typeof props !== 'object') return props;
 
     if ("$bind" in props) { // $bind may be falsy value
         const resolved = get(global, local, props.$bind);
-        Object.keys(resolved).forEach((key) => {
-            if (blacklistedProps.has(key) || (isEventHandlerKey(key) && typeof resolved[key] !== 'function')) {
-                delete resolved[key];
+		
+		if(!resolved || typeof resolved !== 'object') return resolved;
+		
+		const clone = Array.isArray(resolved) ? [...resolved] : {...resolved};
+        Object.keys(clone).forEach((key) => {
+            if (blacklistedProps.has(key) || (isEventHandlerKey(key) && typeof clone[key] !== 'function')) {
+                delete clone[key];
             }
         })
-        return resolved;
+        return clone;
     }
-
-    Object.keys(props).forEach((key) => {
+	
+	const clone = Array.isArray(props) ? [...props] : {...props};
+    Object.keys(clone).forEach((key) => {
         if (blacklistedProps.has(key)) {
-            delete props[key];
+            delete clone[key];
             return;
         }
 
-        const val = props[key];
+        const val = clone[key];
         if (typeof val === "object") {
-            props[key] = resolveProps(global, local, val);
-            if (isEventHandlerKey(key) && typeof props[key] !== 'function') {
-                delete props[key];
+            clone[key] = resolveProps(global, local, val);
+            if (isEventHandlerKey(key) && typeof clone[key] !== 'function') {
+                delete clone[key];
             }
         }
     })
-    return props;
+    return clone;
 }
 
 /**

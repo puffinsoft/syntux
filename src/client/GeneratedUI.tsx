@@ -19,6 +19,7 @@ export interface GeneratedUIProps {
     errorFallback?: JSX.Element;
     animate?: AnimateOptions;
     rerenderEndpoint?: string;
+    onUpdate?: (schema: string) => void;
 }
 
 /**
@@ -53,6 +54,7 @@ export function GeneratedUI(props: GeneratedUIProps) {
         placeholder,
         cached,
         onGenerate,
+        onUpdate,
         errorFallback,
         animate,
         rerenderEndpoint,
@@ -109,6 +111,7 @@ export function GeneratedUI(props: GeneratedUIProps) {
             errorFallback={errorFallback}
             animate={animate}
             onGenerate={onGenerate}
+            onUpdate={onUpdate}
             rerender={{ context: rerenderContext, endpoint: rerenderEndpoint }}
         />
     );

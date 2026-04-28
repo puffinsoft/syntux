@@ -25,6 +25,7 @@ export function GeneratedClient({
     errorFallback,
     animate,
     onGenerate,
+    onUpdate,
     rerender,
 }: {
     value: any;
@@ -35,6 +36,7 @@ export function GeneratedClient({
     errorFallback?: JSX.Element;
     animate?: AnimateOptions;
     onGenerate?: (schema: string) => void;
+    onUpdate?: (schema: string) => void;
     rerender: RerenderContext;
 }) {
     const [statefulValue, setStatefulValue] = useState(value);
@@ -76,8 +78,9 @@ export function GeneratedClient({
 
                     const delta = decoder.decode(value);
 
-                    if(parser.current && delta !== undefined){
-                        if(parser.current.addDelta(delta)){
+                    if (parser.current && delta !== undefined) {
+                        if (parser.current.addDelta(delta)) {
+                            onUpdate?.(parser.current.total);
                             forceUpdate();
                         }
                     }
@@ -86,6 +89,7 @@ export function GeneratedClient({
                 if (isActive) {
                     parser.current?.finish();
                     forceUpdate();
+                    onUpdate?.(parser.current?.total ?? '');
                     onGenerate?.(parser.current?.total ?? '');
                 }
             } catch (err) {

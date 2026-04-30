@@ -22,8 +22,8 @@ export function GeneratedClient({
     endpoint,
     fetchBody,
     placeholder,
-    errorFallback,
     animate,
+    onError,
     onGenerate,
     onUpdate,
     rerender,
@@ -33,8 +33,8 @@ export function GeneratedClient({
     endpoint: string;
     fetchBody: object;
     placeholder?: JSX.Element;
-    errorFallback?: JSX.Element;
     animate?: AnimateOptions;
+    onError?: (error: unknown) => void;
     onGenerate?: (schema: string) => void;
     onUpdate?: (schema: string) => void;
     rerender: RerenderContext;
@@ -42,7 +42,6 @@ export function GeneratedClient({
     const [statefulValue, setStatefulValue] = useState(value);
     const [, forceUpdate] = useReducer(x => x + 1, 0);
     const parser = useRef<ResponseParser | null>(null);
-    const [errored, setErrored] = useState(false);
 
     /**
      * single source of truth for useEffect rerenders.
@@ -56,7 +55,6 @@ export function GeneratedClient({
         */
         let isActive = true;
         parser.current = new ResponseParser();
-        setErrored(false);
 
         const initiateStream = async () => {
             try {
@@ -92,8 +90,8 @@ export function GeneratedClient({
                     onUpdate?.(parser.current?.total ?? '');
                     onGenerate?.(parser.current?.total ?? '');
                 }
-            } catch (err) {
-                if (isActive) setErrored(true);
+            } catch (err: unknown) {
+                if (isActive) onError?.(err);
             }
         };
 
@@ -128,7 +126,6 @@ export function GeneratedClient({
     }), [statefulValue, modifyValue]);
 
     const renderContent = () => {
-        if (errored && errorFallback) return <>{errorFallback}</>;
         if (schema?.root) {
             return <Renderer
                 id={schema.root.id}

@@ -16,7 +16,7 @@ export interface GeneratedUIProps {
     cached?: string;
     onGenerate?: (schema: string) => void;
     skeletonize?: boolean;
-    errorFallback?: JSX.Element;
+    onError?: (error: unknown) => void;
     animate?: AnimateOptions;
     rerenderEndpoint?: string;
     onUpdate?: (schema: string) => void;
@@ -33,7 +33,7 @@ export interface GeneratedUIProps {
  * @param hint Custom instructions for the LLM.
  * @param components List of allowed components that the LLM can use.
  * @param placeholder Element to be displayed whilst awaiting streaming to begin.
- * @param errorFallback Element to be displayed if an error occurs.
+ * @param onError Callback if an error occurs.
  * @param animate  configuration for on-mount animation
  * @param rerenderEndpoint The relative URL endpoint for regeneration.
  * 
@@ -55,7 +55,7 @@ export function GeneratedUI(props: GeneratedUIProps) {
         cached,
         onGenerate,
         onUpdate,
-        errorFallback,
+        onError,
         animate,
         rerenderEndpoint,
     } = props;
@@ -108,7 +108,7 @@ export function GeneratedUI(props: GeneratedUIProps) {
             endpoint={endpoint}
             fetchBody={fetchBody}
             placeholder={placeholder}
-            errorFallback={errorFallback}
+            onError={onError}
             animate={animate}
             onGenerate={onGenerate}
             onUpdate={onUpdate}

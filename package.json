@@ -18,10 +18,10 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.mjs",
       "require": "./dist/server.js"
+    },
+    "./templates/*": {
+      "default": "./dist/templates/*"
     }
-  },
-  "bin": {
-    "getsyntux": "./dist/bin/cli.mjs"
   },
   "repository": {
     "type": "git",
@@ -34,11 +34,6 @@
   },
   "homepage": "https://github.com/puffinsoft/syntux#readme",
   "dependencies": {
-    "commander": "^14.0.2",
-    "fs-extra": "^11.3.3",
-    "prompts": "^2.4.2",
-    "chalk": "^5.6.2",
-    "react-docgen-typescript": "^2.4.0",
     "ai": "^6.0.3"
   },
   "scripts": {

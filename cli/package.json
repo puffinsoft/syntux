@@ -1,0 +1,30 @@
+{
+  "name": "@getsyntux/cli",
+  "version": "1.0.0-alpha.0",
+  "description": "Command line tools for getsyntux.",
+  "type": "module",
+  "bin": {
+    "getsyntux": "./src/cli.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/puffinsoft/syntux.git",
+    "directory": "cli"
+  },
+  "author": "ColonelParrot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/puffinsoft/syntux/issues"
+  },
+  "homepage": "https://github.com/puffinsoft/syntux#readme",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.2",
+    "fs-extra": "^11.3.2",
+    "prompts": "^2.4.2",
+    "react-docgen-typescript": "^2.4.0"
+  },
+  "files": [
+    "/src/**/*"
+  ]
+}

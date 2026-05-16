@@ -1,15 +1,9 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
-import initCommand from "./commands/init.mjs";
-import generateDefsCommand from "./commands/generate.mjs";
+const args = process.argv.slice(2);
+const suffix = args.length > 0 ? ` ${args.join(" ")}` : "";
 
-const program = new Command();
-program.name("getsyntux").description("The declarative generative-UI library.")
-program.addCommand(initCommand)
-program.addCommand(generateDefsCommand)
+console.error("getsyntux: the CLI has moved to @getsyntux/cli.");
+console.error(`getsyntux: use: npx @getsyntux/cli${suffix}`);
 
-const args = process.argv.slice(2)
-if(args.length === 0) process.argv.splice(2, 0, "init")
-
-program.parse(process.argv)
+process.exit(1);

@@ -138,7 +138,7 @@ export default function Page() {
 
 <sup>
 
-**Note**: the `components` array above can be generated automatically with `npx getsyntux generate-defs <component.tsx>`. See the [documentation](https://docs.getsyntux.com/api#generate-defs).
+**Note**: the `components` array above can be generated automatically with `npx @getsyntux/cli generate-defs <component.tsx>`. See the [documentation](https://docs.getsyntux.com/api#generate-defs).
 
 </sup>
 

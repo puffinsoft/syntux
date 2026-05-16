@@ -1,8 +1,14 @@
 {
   "name": "getsyntux",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "Build generative UIs for the web.",
   "keywords": ["generative-ui"],
+  "workspaces": [
+    "cli"
+  ],
+  "bin": {
+    "getsyntux": "./dist/bin/cli.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
